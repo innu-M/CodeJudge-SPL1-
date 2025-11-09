@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build and Run C Code Runner",
+      "type": "shell",
+      "command": "gcc",
+      "args": [
+        "src/*.c",
+        "-I", "include",
+        "-o", "CodeRunner.exe",
+        "-Wall",
+        "-g"
+      ],
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Run Program",
+      "type": "shell",
+      "command": "./CodeRunner.exe",
+      "dependsOn": "Build and Run C Code Runner",
+      "problemMatcher": []
+    }
+  ]
+}
