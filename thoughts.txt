@@ -1,3 +1,5 @@
-1.creating header files-measure string size
-2.adding extra //'s
-3.can i take raw codes
+1.work with input paths
+2.compile
+3.error detection
+4.output comparison
+5.report

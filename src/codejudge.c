@@ -9,15 +9,15 @@
 void clear_buffer() 
 {
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while((c = getchar()) != '\n' && (c != EOF));
 
 }
 
 void read_file(char *filename, char *content) 
 {
-    FILE *file = fopen(filename, "r");
+    FILE *file = fopen(filename,"r");
 
-    if (file == NULL) 
+    if(file == NULL) 
     {
         printf("File not found: %s\n", filename);
         strcpy(content, "");
@@ -28,9 +28,9 @@ void read_file(char *filename, char *content)
     char line[200];
     int first = 1;
     
-    while (fgets(line, sizeof(line), file) != NULL) 
+    while(fgets(line, sizeof(line),file) != NULL) 
     {
-        if (!first) 
+        if(!first) 
         {
             strcat(content, "\n");
         }
