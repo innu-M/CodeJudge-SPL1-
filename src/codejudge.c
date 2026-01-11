@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+
 //#include "metrics.h"
-//#include "detailed_com.h"
+
 
 #define LIM 2000
 
@@ -18,22 +18,26 @@ void get_expected_output(char *expected);
 void save_input_to_file(char *input);
 void run_program_and_capture_output(char *actual);
 void display_comparison(char *input, char *expected, char *actual);
-int execute_test_case(int test_number);
+int execute_test_case(void);
 void cleanup_test_files();
 void display_final_result(int passed, int total);
 
 
 //metrics
-void analyze_code_metrics(char *source_file) {
+/*void analyze_code_metrics(char *source_file) {
     printf("\n          ANALYZING CODE METRICS\n");
     
     CodeMetrics metrics;
-    if (analyze_source_file(source_file, &metrics)) {
+    if (analyze_source_file(source_file, &metrics)) 
+    {
         display_metrics(&metrics);
-    } else {
+    }
+     else 
+    {
         printf("Failed to analyze code metrics.\n");
     }
 }
+    */
 
 
 
@@ -51,24 +55,31 @@ int main() {
     {
         return 1;
     }
-    
-    printf("\nHow many test cases? ");
-    int test_count;
-    scanf("%d", &test_count);
-    clear_buffer();
-    
+  
     int passed = 0;
+    int test_number = 1;
+    char choice;
     
-    for (int i = 1; i <= test_count; i++) 
-    {
-        passed += execute_test_case(i);
+    do {
+        printf("\n          Test Case %d    \n", test_number);
+        passed += execute_test_case();
         cleanup_test_files();
-    }
+        
+        printf("\nAdd another test case? (y/n): ");
+        scanf("%c", &choice);
+        clear_buffer();
+        
+        test_number++;
     
-    display_final_result(passed, test_count);
-
+    
+    } while (choice == 'y' || choice == 'Y');
+    
+    int total_tests = test_number - 1; 
+    display_final_result(passed, total_tests);
+   
+    
     //analysis
-    printf("\nPerform code metrics analysis? (1=Yes, 0=No): ");
+    /*printf("\nPerform code metrics analysis? (1=Yes, 0=No): ");
     int analyze_metrics;
     scanf("%d", &analyze_metrics);
     clear_buffer();
@@ -76,10 +87,9 @@ int main() {
     if (analyze_metrics) {
         analyze_code_metrics(source_file);
     }
+        */
     //will remove this part
-    if (!compile_program(source_file)) {
-        return 1;
-    }
+
     remove("myprogram");
     
     return 0;
@@ -121,27 +131,37 @@ void read_file(char *filename, char *content)
     fclose(file);
 }
 
-void get_user_input(char *buffer) 
-{
+void get_user_input(char *buffer) {
     buffer[0] = '\0';
     char line[200];
+    int line_count = 0;
     
-    printf("Enter number of lines: ");
-    int lines;
-    scanf("%d", &lines);
-    clear_buffer();
+    printf("Enter input (press Enter twice to finish):\n");
     
-    for (int i = 0; i < lines; i++) 
-    {
-        printf("Line %d: ", i + 1);
-        fgets(line, sizeof(line), stdin);
-        line[strcspn(line, "\n")] = '\0';
+    while (1) {
+        printf("Line %d: ", line_count + 1);
         
-        if (i > 0) 
-        {
+        if (fgets(line, sizeof(line), stdin) == NULL) {
+            break;  
+        }
+  
+        line[strcspn(line, "\n")] = '\0';
+
+        if (line[0] == '\0' && line_count > 0) {
+            break;  
+        }
+        
+        if (line_count > 0) {
             strcat(buffer, "\n");
         }
+        
         strcat(buffer, line);
+        line_count++;
+    }
+    
+  
+    if (line_count == 0) {
+        strcpy(buffer, "");
     }
 }
 
@@ -176,6 +196,8 @@ int compile_program(char *source_file)
     printf("Compilation SUCCESS!\n");
     return 1;
 }
+
+
 
 void get_input_data(char *input) 
 {
@@ -278,6 +300,7 @@ void run_program_and_capture_output(char *actual)
                 strcat(actual, error_msg);
             }
         } 
+        
         else if (WIFSIGNALED(exit_code)) 
         {
             int signal_num = WTERMSIG(exit_code);
@@ -317,9 +340,8 @@ void display_comparison(char *input, char *expected, char *actual)
     printf("Actual output:\n%s\n", actual);
 }
 
-int execute_test_case(int test_number) 
+int execute_test_case(void) 
 {
-    printf("\n          Test Case %d    \n", test_number);
     
     char input[LIM], expected[LIM], actual[LIM];
     
@@ -329,12 +351,14 @@ int execute_test_case(int test_number)
     // SAVE INPUT
     save_input_to_file(input);
     
-    printf("\nRunning program\n");
+    printf("\n          Running Your Code  \n");
     run_program_and_capture_output(actual);
     
     display_comparison(input, expected, actual);
     
     // Check for timeout or runtime errors
+
+
     if (strstr(actual, "[TIMEOUT") != NULL) 
     {
         printf(" TIMEOUT - Possible infinite loop\n");
@@ -348,16 +372,17 @@ int execute_test_case(int test_number)
         return 0;
     }
     
-    if (compare_outputs(expected, actual)) 
+    if (strcmp(expected, actual) == 0)  
     {
-    printf(" PASS\n");
-    return 1;
-} 
-else 
-{
-    printf(" FAIL\n");
-    return 0;
-}
+        printf(" PASS\n");
+        return 1;
+    } 
+    else 
+    {
+        printf(" FAIL\n");
+        return 0;
+    }
+
 }
 
 void cleanup_test_files() 
