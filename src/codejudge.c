@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-//#include "metrics.h"
+#include "metrics.h"
 
 
 #define LIM 2000
@@ -24,7 +24,7 @@ void display_final_result(int passed, int total);
 
 
 //metrics
-/*void analyze_code_metrics(char *source_file) {
+void analyze_code_metrics(char *source_file) {
     printf("\n          ANALYZING CODE METRICS\n");
     
     CodeMetrics metrics;
@@ -37,7 +37,7 @@ void display_final_result(int passed, int total);
         printf("Failed to analyze code metrics.\n");
     }
 }
-    */
+    
 
 
 
@@ -79,7 +79,7 @@ int main() {
    
     
     //analysis
-    /*printf("\nPerform code metrics analysis? (1=Yes, 0=No): ");
+    printf("\nPerform code metrics analysis? (1=Yes, 0=No): ");
     int analyze_metrics;
     scanf("%d", &analyze_metrics);
     clear_buffer();
@@ -87,8 +87,7 @@ int main() {
     if (analyze_metrics) {
         analyze_code_metrics(source_file);
     }
-        */
-    //will remove this part
+        
 
     remove("myprogram");
     

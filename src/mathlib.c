@@ -1,6 +1,6 @@
 #include "mathlib.h"
 
-double my_log(double x) 
+double log(double x) 
 {
     if (x <= 0) return -1;
     if (x == 1) return 0;
@@ -33,7 +33,8 @@ double my_pow(double base, int exp)
     if (exp < 0) return 1.0 / my_pow(base, -exp);
     
     double result = 1.0;
-    for (int i = 0; i < exp; i++) {
+    for (int i = 0; i < exp; i++) 
+    {
         result *= base;
     }
     return result;

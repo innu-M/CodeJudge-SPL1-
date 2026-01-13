@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "metrics.h"
+#include "mathlib.h"
 
 // Operator and keyword lists
 const char *operators[] = {
@@ -185,13 +186,16 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
                 
                 
                 int found = 0;
-                for (int i = 0; i < operand_count; i++) {
-                    if (distinct_operands[i] && strcmp(distinct_operands[i], token) == 0) {
+                for (int i = 0; i < operand_count; i++) 
+                {
+                    if (distinct_operands[i] && strcmp(distinct_operands[i], token) == 0) 
+                    {
                         found = 1;
                         break;
                     }
                 }
-                if (!found && operand_count < 100) {
+                if (!found && operand_count < 100) 
+                {
                     distinct_operands[operand_count] = strdup(token);
                     operand_count++;
                     metrics->halstead_n2++;
@@ -205,19 +209,22 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
         if (strstr(trimmed, "if") || strstr(trimmed, "while") || 
             strstr(trimmed, "for") || strstr(trimmed, "case") ||
             strstr(trimmed, "&&") || strstr(trimmed, "||") ||
-            strstr(trimmed, "?")) {
+            strstr(trimmed, "?")) 
+            {
             metrics->cyclomatic++;
-        }
+            }
         
     
         if (strstr(trimmed, "(") && strstr(trimmed, ")") && 
-            !strstr(trimmed, ";") && strstr(trimmed, "{")) {
+            !strstr(trimmed, ";") && strstr(trimmed, "{")) 
+            {
             
             metrics->functions++;
         }
         
      
-        for (int i = 0; trimmed[i]; i++) {
+        for (int i = 0; trimmed[i]; i++) 
+        {
             if (trimmed[i] == '{') brace_count++;
             else if (trimmed[i] == '}') brace_count--;
         }
@@ -267,12 +274,12 @@ void display_metrics(const CodeMetrics *metrics) {
   
   //halstead metrics
     printf("\n       Halstead Metrics       \n");
-    printf("Distinct operators (n1): %d\n", metrics->halstead_n1);
+   /* printf("Distinct operators (n1): %d\n", metrics->halstead_n1);
     printf("Distinct operands (n2): %d\n", metrics->halstead_n2);
     printf("Total operators (N1): %d\n", metrics->halstead_N1);
     printf("Total operands (N2): %d\n", metrics->halstead_N2);
     printf("Program length (N): %.0f\n", metrics->halstead_length);
-    
+        */
     printf("Vocabulary size (n): %.0f\n", metrics->halstead_vocab);
     printf("Volume (V): %.2f\n", metrics->halstead_volume);
     printf("Difficulty (D): %.2f\n", metrics->halstead_difficulty);
@@ -287,7 +294,9 @@ void display_metrics(const CodeMetrics *metrics) {
     
                 printf("Maintainability Index: %.1f\n", mi);
     
-                if (mi > 85)
+
+     //comments           
+     if (mi > 85)
      printf("Rating: Excellent\n");
 
     else if (mi > 65)
