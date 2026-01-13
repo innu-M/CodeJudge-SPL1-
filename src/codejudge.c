@@ -139,7 +139,6 @@ void get_user_input(char *buffer) {
     printf("Enter input (press Enter twice to finish):\n");
     
     while (1) {
-        printf("Line %d: ", line_count + 1);
         
         if (fgets(line, sizeof(line), stdin) == NULL) {
             break;  
