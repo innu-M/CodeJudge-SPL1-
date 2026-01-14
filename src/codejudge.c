@@ -14,7 +14,7 @@ typedef struct {
     char *data;
     size_t size;
     size_t capacity;
-} DynamicBuffer;
+} DBuffer;
 
 typedef struct {
     int test_number;
@@ -29,22 +29,22 @@ TestResult *test_results = NULL;
 int total_tests = 0;
 
 void clear_buffer();
-DynamicBuffer* create_buffer();
-void free_buffer(DynamicBuffer *buffer);
-void append_to_buffer(DynamicBuffer *buffer, const char *str);
-void read_file_dynamic(const char *filename, DynamicBuffer *buffer);
-void get_user_input_dynamic(DynamicBuffer *buffer);
-char* read_string_dynamic();
+DBuffer* create_buffer();
+void free_buffer(DBuffer *buffer);
+void append_to_buffer(DBuffer *buffer, const char *str);
+void read_file(const char *filename, DBuffer *buffer);
+void get_user_input(DBuffer *buffer);
+char* read_string();
 int compile_program(const char *source_file);
-void get_input_data(DynamicBuffer *buffer);
-void get_expected_output(DynamicBuffer *buffer);
+void get_input_data(DBuffer *buffer);
+void get_expected_output(DBuffer *buffer);
 void save_input_to_file(const char *input);
-void run_program_and_CtO(DynamicBuffer *buffer);
-void display_comparison(const char *input, const char *expected, const char *actual);
+void run_program_and_CtO(DBuffer *buffer);
+void comparison(const char *input, const char *expected, const char *actual);
 int execute_test_case(int test_number);
 void cleanup_test_files();
-void display_final_result(int passed, int total);
-void analyze_code_metrics(const char *source_file);
+void display_result(int passed, int total);
+void code_metrics(const char *source_file);
 void display_menu();
 void display_header();
 
@@ -53,7 +53,7 @@ int main()
     display_header();
     
     printf("Enter C file path: ");
-    char *source_file = read_string_dynamic();
+    char *source_file = read_string();
     
     if (!source_file) 
     {
@@ -104,7 +104,7 @@ int main()
             case 2:
                 if (total_tests > 0) 
                 {
-                    display_final_result(passed, total_tests);
+                    display_result(passed, total_tests);
                 } 
                 else 
                 {
@@ -114,7 +114,7 @@ int main()
                 
            
             case 3:
-                analyze_code_metrics(source_file);
+                code_metrics(source_file);
                 break;
                 
             case 4:
@@ -172,9 +172,9 @@ void clear_buffer()
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-DynamicBuffer* create_buffer() 
+DBuffer* create_buffer() 
 {
-    DynamicBuffer *buffer = malloc(sizeof(DynamicBuffer));
+    DBuffer *buffer = malloc(sizeof(DBuffer));
     if (!buffer) return NULL;
     
     buffer->capacity = 1024;
@@ -191,7 +191,7 @@ DynamicBuffer* create_buffer()
     return buffer;
 }
 
-void free_buffer(DynamicBuffer *buffer) 
+void free_buffer(DBuffer *buffer) 
 {
     if (buffer) 
     {
@@ -200,7 +200,7 @@ void free_buffer(DynamicBuffer *buffer)
     }
 }
 
-void append_to_buffer(DynamicBuffer *buffer, const char *str) 
+void append_to_buffer(DBuffer *buffer, const char *str) 
 {
     if (!buffer || !str) return;
     
@@ -225,7 +225,7 @@ void append_to_buffer(DynamicBuffer *buffer, const char *str)
     buffer->size += str_len;
 }
 
-char* read_string_dynamic() 
+char* read_string() 
 {
     size_t capacity = 256;
     size_t size = 0;
@@ -255,7 +255,7 @@ char* read_string_dynamic()
     return str;
 }
 
-void read_file_dynamic(const char *filename, DynamicBuffer *buffer) 
+void read_file(const char *filename, DBuffer *buffer) 
 {
     FILE *file = fopen(filename, "r");
     
@@ -284,7 +284,7 @@ void read_file_dynamic(const char *filename, DynamicBuffer *buffer)
     fclose(file);
 }
 
-void get_user_input_dynamic(DynamicBuffer *buffer) 
+void get_user_input(DBuffer *buffer) 
 {
     char line[512];
     int line_count = 0;
@@ -359,7 +359,7 @@ int compile_program(const char *source_file)
     return 1;
 }
 
-void get_input_data(DynamicBuffer *buffer) 
+void get_input_data(DBuffer *buffer) 
 {
     printf("\nInput from:\n");
     printf(" 1. Keyboard\n");
@@ -372,22 +372,22 @@ void get_input_data(DynamicBuffer *buffer)
     
     if (method == 1) 
     {
-        get_user_input_dynamic(buffer);
+        get_user_input(buffer);
     } 
     else 
     {
         printf("Input File(path): ");
-        char *input_file = read_string_dynamic();
+        char *input_file = read_string();
         
         if (input_file) 
         {
-            read_file_dynamic(input_file, buffer);
+            read_file(input_file, buffer);
             free(input_file);
         }
     }
 }
 
-void get_expected_output(DynamicBuffer *buffer) 
+void get_expected_output(DBuffer *buffer) 
 {
     printf("\nExpected output from:\n");
     printf(" 1. Keyboard\n");
@@ -400,16 +400,16 @@ void get_expected_output(DynamicBuffer *buffer)
     
     if (method == 1) 
     {
-        get_user_input_dynamic(buffer);
+        get_user_input(buffer);
     } 
     else 
     {
         printf("Expected Output File(Path): ");
-        char *output_file = read_string_dynamic();
+        char *output_file = read_string();
         
         if (output_file) 
         {
-            read_file_dynamic(output_file, buffer);
+            read_file(output_file, buffer);
             free(output_file);
         }
     }
@@ -429,7 +429,7 @@ void save_input_to_file(const char *input)
     fclose(temp);
 }
 
-void run_program_and_CtO(DynamicBuffer *buffer)
+void run_program_and_CtO(DBuffer *buffer)
 {
     int exit_code = system("timeout 10s ./myprogram < my_input.txt > my_output.txt 2>&1");
     
@@ -502,7 +502,7 @@ void run_program_and_CtO(DynamicBuffer *buffer)
     }
 }
 
-void display_comparison(const char *input, const char *expected, const char *actual) 
+void comparison(const char *input, const char *expected, const char *actual) 
 {
     printf("\n========================================\n");
     printf("                COMPARISON                  \n");
@@ -515,9 +515,9 @@ void display_comparison(const char *input, const char *expected, const char *act
 
 int execute_test_case(int test_number) 
 {
-    DynamicBuffer *input = create_buffer();
-    DynamicBuffer *expected = create_buffer();
-    DynamicBuffer *actual = create_buffer();
+    DBuffer *input = create_buffer();
+    DBuffer *expected = create_buffer();
+    DBuffer *actual = create_buffer();
     
     if (!input || !expected || !actual) 
     {
@@ -535,7 +535,7 @@ int execute_test_case(int test_number)
     printf("\nCode is Running ..\n");
     run_program_and_CtO(actual);
     
-    display_comparison(input->data, expected->data, actual->data);
+    comparison(input->data, expected->data, actual->data);
     
     int idx = test_number - 1;
     test_results[idx].test_number = test_number;
@@ -592,7 +592,7 @@ void cleanup_test_files()
     remove("my_output.txt");
 }
 
-void display_final_result(int passed, int total) 
+void display_result(int passed, int total) 
 {
 printf("\n========================================\n");
 printf("                FINAL RESULTS               \n");
@@ -622,7 +622,7 @@ for (int i = 0; i < total; i++)
 }
 
 
-void analyze_code_metrics(const char *source_file)
+void code_metrics(const char *source_file)
 {
                         printf("\n========================================\n");
                         printf("            ANALYZING CODE METRICS          \n");
