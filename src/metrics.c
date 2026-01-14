@@ -262,37 +262,40 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
 }
 
 void display_metrics(const CodeMetrics *metrics) {
-    printf("\n      CODE METRICS ANALYSIS      \n");
-    printf("Lines of Code (LOC): %d\n", metrics->loc);
+    printf("\n              ============= CODE METRICS ANALYSIS ============    \n");
+    printf("                      Lines of Code (LOC): %d\n", metrics->loc);
 
-    printf("Logical LOC: %d\n", metrics->lloc);
-    printf("Comment lines: %d\n", metrics->comments);
+    printf("                      Logical LOC: %d\n", metrics->lloc);
+    printf("                      Comment lines: %d\n", metrics->comments);
 
-    printf("Comment percentage: %.1f%%\n", 
+    printf("                      Comment percentage: %.1f%%\n", 
            (metrics->comments * 100.0) / metrics->loc);
-    printf("Number of functions: %d\n", metrics->functions);
+    printf("                      Number of functions: %d\n", metrics->functions);
   
   //halstead metrics
-    printf("\n       Halstead Metrics       \n");
-   /* printf("Distinct operators (n1): %d\n", metrics->halstead_n1);
+    printf("\n             ======= Halstead Metrics =========       \n");
+
+
+    /* printf("Distinct operators (n1): %d\n", metrics->halstead_n1);
     printf("Distinct operands (n2): %d\n", metrics->halstead_n2);
     printf("Total operators (N1): %d\n", metrics->halstead_N1);
     printf("Total operands (N2): %d\n", metrics->halstead_N2);
     printf("Program length (N): %.0f\n", metrics->halstead_length);
+    
         */
-    printf("Vocabulary size (n): %.0f\n", metrics->halstead_vocab);
-    printf("Volume (V): %.2f\n", metrics->halstead_volume);
-    printf("Difficulty (D): %.2f\n", metrics->halstead_difficulty);
-    printf("Effort (E): %.2f\n", metrics->halstead_effort);
+    printf("                      Vocabulary size (n): %.0f\n", metrics->halstead_vocab);
+    printf("                      Volume (V): %.2f\n", metrics->halstead_volume);
+    printf("                      Difficulty (D): %.2f\n", metrics->halstead_difficulty);
+    printf("                      Effort (E): %.2f\n", metrics->halstead_effort);
 
-    printf("\n--- Complexity ---\n");
-    printf("Cyclomatic complexity: %d\n", metrics->cyclomatic);
-    printf("\n--- Maintainability Index (Approx) ---\n");
+    printf("\n             ========== Complexity =========\n");
+    printf("                     Cyclomatic complexity: %d\n", metrics->cyclomatic);
+    
    
     double mi = 171 - 5.2 * log(metrics->halstead_volume) - 
                 0.23 * metrics->cyclomatic - 16.2 * log(metrics->loc);
     
-                printf("Maintainability Index: %.1f\n", mi);
+    printf("                     Maintainability Index: %.1f\n", mi);
     
 
      //comments           

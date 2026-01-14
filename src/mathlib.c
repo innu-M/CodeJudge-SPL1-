@@ -26,37 +26,3 @@ double log(double x)
     
     return result + adjustments;
 }
-
-double my_pow(double base, int exp) 
-{
-    if (exp == 0) return 1.0;
-    if (exp < 0) return 1.0 / my_pow(base, -exp);
-    
-    double result = 1.0;
-    for (int i = 0; i < exp; i++) 
-    {
-        result *= base;
-    }
-    return result;
-}
-
-double my_sqrt(double x) 
-{
-    if (x < 0) return -1;
-    if (x == 0) return 0;
-    
-    double guess = x / 2.0;
-    double epsilon = 0.00001;
-    
-    while (my_abs(guess * guess - x) > epsilon) 
-    {
-        guess = (guess + x / guess) / 2.0;
-    }
-    
-    return guess;
-}
-
-double my_abs(double x) 
-{
-    return x < 0 ? -x : x;
-}
