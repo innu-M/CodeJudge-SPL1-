@@ -1,0 +1,331 @@
+https://www.geeksforgeeks.org/software-engineering/software-engineering-halsteads-software-metrics/
+
+Halstead’s Software Metrics - Software Engineering
+Last Updated : 27 Sep, 2025
+Halstead's Software metrics are a set of measures proposed by Maurice Halstead to evaluate the complexity of a software program. These metrics are based on the number of distinct operators and operands in the program and are used to estimate the effort required to develop and maintain the program. These metrics provide a quantitative assessment of software complexity, aiding in software development, maintenance, and quality assurance processes. They include measures such as program length, vocabulary, volume, difficulty, and effort, calculated based on the number of unique operators and operands in a program. Halstead's metrics help developers understand and manage software complexity, identify potential areas for optimization, and improve overall software quality.
+
+What is Halstead’s Software Metrics?
+Halstead's Software Metrics, developed by Maurice Halstead in 1977, are a set of measures used to quantify various aspects of software programs. According to Halstead's, "A computer program is an implementation of an algorithm considered to be a collection of tokens which can be classified as either operators or operand". This means that the program consists of various symbols and data elements that are either performing actions (operators) or upon which actions are performed (operands). This distinction helps in understanding and analyzing the structure and behavior of the program.
+
+Token Count
+In Halstead’s Software metrics, a computer program is defined as a collection of tokens that can be described as operators or operands. These tokens are used to analyze the complexity and volume of a program. Operators are symbols that represent actions, while operands are the entities on which the operators act. All software science metrics can be specified using these basic symbols. These symbols are referred to as tokens. By counting and analyzing these tokens, Halstead's metrics provide insights into the complexity, effort, and quality of software code.
+
+In Halstead's Software Metrics:
+
+n1 = Number of distinct operators.
+
+n2 = Number of distinct operands. 
+
+N1 = Total number of occurrences of operators. 
+
+N2 = Total number of occurrences of operands.
+
+Field of Halstead Metrics
+Program length (N):
+This is the total number of operator and operand occurrences in the program.
+
+Vocabulary size (n):
+This is the total number of distinct operators and operands in the program.
+
+Program volume (V):
+This is the product of program length (N) and the logarithm of vocabulary size (n),
+
+i.e., V = N*log2(n)
+
+Program level (L):
+This is the ratio of the number of operator occurrences to the number of operand occurrences in the program,
+
+i.e., L = n1/n2
+
+where n1 is the number of operator occurrences and n2 is the number of operand occurrences.
+
+Program difficulty (D):
+This is the ratio of the number of unique operators to the total number of operators in the program,
+
+i.e., D = (n1/2) * (N2/n2)
+
+Program effort (E):
+This is the product of program volume (V) and program difficulty
+
+(D), i.e., E = V*D
+
+Time to implement (T):
+This is the estimated time required to implement the program, based on the program effort (E) and a constant value that depends on the programming language and development environment.
+
+Halstead's software metrics can be used to estimate the size, complexity, and effort required to develop and maintain a software program. However, they have some limitations, such as the assumption that all operators and operands are equally important, and the assumption that the same set of metrics can be used for different programming languages and development environments.
+
+Halstead's Software Metrices
+Halstead's Software Metrics are: 
+
+Halstead Program Length
+Halstead Program Length (N) in Halstead's Software Metrics refers to the total number of tokens in a program. Where tokens are the smallest individual units of code such as operators, operands, keywords, and identifiers.
+
+N = N1 + N2 
+
+The estimated program length is denoted by N^ and is given by the formula:
+
+N^ = n1log2n1 + n2log2n2 
+
+
+Several alternative formulas have been proposed to estimate program length, including:
+
+NJ = log2(n1!) + log2(n2!)NB = n1 * log2n2 + n2 * log2n1NC = n1 * sqrt(n1) + n2 * sqrt(n2)NS = (n * log2n) / 2
+
+Halstead's,
+Halstead Vocabulary
+The total number of unique operators and unique operand occurrences. 
+
+n = n1 + n2
+
+Program Volume
+Proportional to program size, represents the size, in bits, of space necessary for storing the program. This parameter is dependent on specific algorithm implementation. The properties V, N, and the number of lines in the code are shown to be linearly connected and equally valid for measuring relative program size. 
+
+V = Size * (log2 vocabulary) = N * log2(n) 
+
+The unit of measurement of volume is the common unit for size “bits”. It is the actual size of a program if a uniform binary encoding for the vocabulary is used. And
+
+error = Volume / 3000
+
+Potential Minimum Volume
+The potential minimum volume V* is defined as the volume of the most succinct program in which a problem can be coded. 
+
+V* = (2 + n2*) * log2(2 + n2*) 
+
+
+Here, n2* is the count of unique input and output parameters
+
+Program Level
+To rank the programming languages, the level of abstraction provided by the programming language, Program Level (L) is considered. The higher the level of a language, the less effort it takes to develop a program using that language. 
+
+L = V* / V 
+The value of L ranges between zero and one, with L=1 representing a program written at the highest possible level (i.e., with minimum size). 
+And estimated program level is
+
+L^ =2 * (n2) / (n1)(N2)
+
+Program Difficulty
+This parameter shows how difficult to handle the program is. 
+
+D = (n1 / 2) * (N2 / n2) 
+D = 1 / L 
+
+As the volume of the implementation of a program increases, the program level decreases and the difficulty increases. Thus, programming practices such as redundant usage of operands, or the failure to use higher-level control constructs will tend to increase the volume as well as the difficulty.
+
+Programming Effort
+Measures the amount of mental activity needed to translate the existing algorithm into implementation in the specified program language. 
+
+E = V / L = D * V = Difficulty * Volume 
+
+Language Level
+Shows the algorithm implementation program language level. The same algorithm demands additional effort if it is written in a low-level program language. For example, it is easier to program in Pascal than in Assembler. 
+
+L' = V / D / D lambda = L * V* = L2 * V 
+
+Intelligence Content
+Determines the amount of intelligence presented (stated) in the program This parameter provides a measurement of program complexity, independently of the programming language in which it was implemented. 
+
+I = V / D
+
+Programming Time
+Shows time (in minutes) needed to translate the existing algorithm into implementation in the specified program language. 
+
+T = E / (f * S) 
+
+The concept of the processing rate of the human brain, developed by psychologist John Stroud, is also used. Stoud defined a moment as the time required by the human brain to carry out the most elementary decision. The Stoud number S is therefore Stoud's moments per second with: 
+5 <= S <= 20. Halstead uses 18. The value of S has been empirically developed from psychological reasoning, and its recommended value for programming applications is 18. 
+Stroud number S = 18 moments / second 
+seconds-to-minutes factor f = 60 
+
+Example of Halstead's Software Metrices
+Before we look at the example, let's review the counting rules for a C program.
+
+Counting Rules for C Language
+Comments are not considered.
+The identifier and function declarations are not considered
+All the variables and constants are considered operands.
+Global variables used in different modules of the same program are counted as multiple occurrences of the same variable.
+Local variables with the same name in different functions are counted as unique operands.
+Functions calls are considered operators.
+All looping statements e.g., do {…} while ( ), while ( ) {…}, for ( ) {…}, all control statements e.g., if ( ) {…}, if ( ) {…} else {…}, etc. are considered as operators.
+In control construct switch ( ) {case:…}, switch as well as all the case statements are considered as operators.
+The reserve words like return, default, continue, break, size, etc., are considered operators.
+All the brackets, commas, and terminators are considered operators.
+GOTO is counted as an operator and the label is counted as an operand.
+The unary and binary occurrences of “+” and “-” are dealt with separately. Similarly “*” (multiplication operator) is dealt with separately.
+In the array variables such as “array-name [index]” “array-name” and “index” are considered as operands and [ ] is considered as operator.
+In the structure variables such as “struct-name, member-name” or “struct-name -> member-name”, struct-name, and member-name are taken as operands, and ‘.’, ‘->’ are taken as operators. Some names of member elements in different structure variables are counted as unique operands.
+All the hash directives are ignored.
+Let's examine the following C program
+
+int sort (int x[ ], int n)
+
+{
+    int i, j, save, im1;
+    /*This function sorts array x in ascending order */
+    If (n< 2) return 1;
+    for (i=2; i< =n; i++)
+    {
+        im1=i-1;
+        for (j=1; j< =im1; j++)
+            if (x[i] < x[j])
+            {
+                Save = x[i];
+                x[i] = x[j];
+                x[j] = save;
+            }
+    }
+    return 0;
+}
+Explanation
+Operators
+
+Occurrences
+
+Operands
+
+Occurrences
+
+int
+
+4
+
+sort
+
+1
+
+()
+
+5
+
+x
+
+7
+
+,
+
+4
+
+n
+
+3
+
+[]
+
+7
+
+i
+
+8
+
+if
+
+2
+
+j
+
+7
+
+<
+
+2
+
+save
+
+3
+
+;
+
+11
+
+im1
+
+3
+
+for
+
+2
+
+2
+
+2
+
+=
+
+6
+
+1
+
+3
+
+-
+
+1
+
+0
+
+1
+
+<=
+
+2
+
+-
+
+-
+
+++
+
+2
+
+-
+
+-
+
+return
+
+2
+
+-
+
+-
+
+{}
+
+3
+
+-
+
+-
+
+n1=14
+
+N1=53
+
+n2=10
+
+N2=38
+
+Here are the calculated Halstead metrics for the given C program:
+
+Program Length (N) = 91 Vocabulary (n) = 24 Volume (V) = 417.23 bits Estimated Program Length (N^) = 86.51 Unique Operands Used as Both Input and Output (n2* = 3 (x: array holding integer  to be sorted. This is used both as input and output) Potential Volume (V*) = 11.6 Program Level (L) = 0.027 Difficulty (D) = 37.03 Estimated Program Level (L^) = 0.038 Effort (T) = 610 seconds 
+
+Advantages of Halstead Metrics
+It is simple to calculate.
+It measures the overall quality of the programs.
+It predicts the rate of error.
+It predicts maintenance effort.
+It does not require a full analysis of the programming structure.
+It is useful in scheduling and reporting projects.
+It can be used for any programming language.
+Easy to use: The metrics are simple and easy to understand and can be calculated quickly using automated tools.
+Quantitative measure: The metrics provide a quantitative measure of the complexity and effort required to develop and maintain a software program, which can be useful for project planning and estimation.
+Language independent: The metrics can be used for different programming languages and development environments.
+Standardization: The metrics provide a standardized way to compare and evaluate different software programs.
+Disadvantages of Halstead Metrics
+It depends on the complete code.
+It has no use as a predictive estimating model.
+Limited scope: The metrics focus only on the complexity and effort required to develop and maintain a software program, and do not take into account other important factors such as reliability, maintainability, and usability.
+Limited applicability: The metrics may not be applicable to all types of software programs, such as those with a high degree of interactivity or real-time requirements.
+Limited accuracy: The metrics are based on a number of assumptions and simplifications, which may limit their accuracy in certain situations.
+Conclusion
+Halstead's software metrics offer a quantitative approach to assessing a program's complexity. They include measures like program length (total operators and operands), vocabulary (unique operators and operands), and volume (a measure of the program's size in bits). These metrics help understand the diversity and size of the code, aiding in evaluating its complexity and potential maintainability. Overall, Halstead's metrics provide valuable insights into the code's structure and complexity.

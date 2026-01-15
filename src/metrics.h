@@ -14,7 +14,6 @@ typedef struct {
     double halstead_volume; 
     double halstead_difficulty; 
     double halstead_effort;     
-    int cyclomatic;        
     int functions;         
 } CodeMetrics;
 

@@ -206,14 +206,14 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
         }
         
   
-        if (strstr(trimmed, "if") || strstr(trimmed, "while") || 
+        /*if (strstr(trimmed, "if") || strstr(trimmed, "while") || 
             strstr(trimmed, "for") || strstr(trimmed, "case") ||
             strstr(trimmed, "&&") || strstr(trimmed, "||") ||
             strstr(trimmed, "?")) 
             {
             metrics->cyclomatic++;
             }
-        
+        */
     
         if (strstr(trimmed, "(") && strstr(trimmed, ")") && 
             !strstr(trimmed, ";") && strstr(trimmed, "{")) 
@@ -250,7 +250,7 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
     metrics->halstead_effort = metrics->halstead_difficulty * metrics->halstead_volume;
     
     
-    metrics->cyclomatic += 1; 
+    //metrics->cyclomatic += 1; 
 
     for (int i = 0; i < op_count; i++)
      free(distinct_ops[i]);
@@ -281,32 +281,14 @@ void display_metrics(const CodeMetrics *metrics) {
     printf("Total operators (N1): %d\n", metrics->halstead_N1);
     printf("Total operands (N2): %d\n", metrics->halstead_N2);
     printf("Program length (N): %.0f\n", metrics->halstead_length);
-    
+
         */
     printf("                      Vocabulary size (n): %.0f\n", metrics->halstead_vocab);
     printf("                      Volume (V): %.2f\n", metrics->halstead_volume);
     printf("                      Difficulty (D): %.2f\n", metrics->halstead_difficulty);
     printf("                      Effort (E): %.2f\n", metrics->halstead_effort);
 
-    printf("\n             ========== Complexity =========\n");
-    printf("                     Cyclomatic complexity: %d\n", metrics->cyclomatic);
-    
-   
-    double mi = 171 - 5.2 * log(metrics->halstead_volume) - 
-                0.23 * metrics->cyclomatic - 16.2 * log(metrics->loc);
-    
-    printf("                     Maintainability Index: %.1f\n", mi);
-    
 
      //comments           
-     if (mi > 85)
-     printf("Rating: Excellent\n");
-
-    else if (mi > 65)
-    printf("Rating: Good\n");
-
-    else if (mi > 45)
-     printf("Rating: Fair\n");
-    else
-     printf("Rating: Poor\n");
+     
 }

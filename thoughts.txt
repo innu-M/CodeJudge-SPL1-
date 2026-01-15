@@ -3,3 +3,8 @@
 3.error detection
 4.output comparison
 5.report
+
+6.metrics
+7.Halstead
+8.loc
+9.Cyclomatic

@@ -458,7 +458,7 @@ void run_program_and_CtO(DBuffer *buffer)
             int status = WEXITSTATUS(exit_code);
             if (status == 124) 
             {
-                append_to_buffer(buffer, "\n[TIMEOUT: Program exceeded 2 seconds]");
+                append_to_buffer(buffer, "\n[TIMEOUT: Program exceeded 10 seconds]");
             } 
             else if (status != 0) 
             {
