@@ -206,15 +206,6 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
         }
         
   
-        /*if (strstr(trimmed, "if") || strstr(trimmed, "while") || 
-            strstr(trimmed, "for") || strstr(trimmed, "case") ||
-            strstr(trimmed, "&&") || strstr(trimmed, "||") ||
-            strstr(trimmed, "?")) 
-            {
-            metrics->cyclomatic++;
-            }
-        */
-    
         if (strstr(trimmed, "(") && strstr(trimmed, ")") && 
             !strstr(trimmed, ";") && strstr(trimmed, "{")) 
             {
@@ -250,7 +241,6 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
     metrics->halstead_effort = metrics->halstead_difficulty * metrics->halstead_volume;
     
     
-    //metrics->cyclomatic += 1; 
 
     for (int i = 0; i < op_count; i++)
      free(distinct_ops[i]);
