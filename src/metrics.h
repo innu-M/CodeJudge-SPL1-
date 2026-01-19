@@ -23,4 +23,8 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics);
 
 void display_metrics(const CodeMetrics *metrics);
 
+//cyclomatic(loop part incomplete)
+int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) {
+
+
 #endif
