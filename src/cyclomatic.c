@@ -1,4 +1,4 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include "metrics.h"
@@ -28,6 +28,40 @@ int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) 
          continue;
     
         char *ptr = line;
+        
+ while (*ptr) {
+            
+            if (strncmp(ptr, "if", 2) == 0 && !isalnum(ptr[2])) 
+            {
+                decision_points++;
+            }
+           
+            else if (strncmp(ptr, "while", 5) == 0 && !isalnum(ptr[5])) 
+            {
+                decision_points++;
+            }
+          
+            else if (strncmp(ptr, "for", 3) == 0 && !isalnum(ptr[3])) 
+            {
+                decision_points++;
+            }
+
+            else if (strncmp(ptr, "case", 4) == 0 && !isalnum(ptr[4])) 
+            {
+                decision_points++;
+            }
+           
+            else if (strncmp(ptr, "&&", 2) == 0 || strncmp(ptr, "||", 2) == 0) 
+            {
+                decision_points++;
+            }
+          
+            else if (*ptr == '?') 
+            {
+                decision_points++;
+            }
+            ptr++;
+        }
        
     }
     
@@ -39,3 +73,4 @@ int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) 
     
     return 1;
 }
+ 
