@@ -14,7 +14,17 @@ typedef struct {
     double halstead_volume; 
     double halstead_difficulty; 
     double halstead_effort;     
-    int functions;         
+    int functions;    
+    
+     
+    int cyclomatic_complexity;
+    int decision_points;
+    
+   
+    int cognitive_complexity;
+    int nesting_level;
+    int max_nesting;
+    
 } CodeMetrics;
 
 
@@ -23,8 +33,7 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics);
 
 void display_metrics(const CodeMetrics *metrics);
 
-//cyclomatic(loop part incomplete)
-int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) {
-
+int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) ;
+int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics);
 
 #endif
