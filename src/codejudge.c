@@ -510,7 +510,25 @@ void comparison(const char *input, const char *expected, const char *actual)
     printf("Input:\n%s\n\n", input);
     printf("Expected Output:\n%s\n\n", expected);
     printf("Actual Output:\n%s\n", actual);
-    printf("========================================\n");
+    
+    printf("Do you want to see the difference visualization? (y/n): ");
+    char choice;
+    scanf("%c", &choice);
+    clear_buffer();
+    
+    if (choice == 'y' || choice == 'Y') 
+    {
+        if (strcmp(expected, actual) != 0) 
+        {
+            visualize_output_difference(expected, actual);
+        } 
+        else 
+        {
+            printf(GREEN "\nOutputs are identical, no differences to show.\n" RESET);
+        }
+    }
+    
+    
 }
 
 int execute_test_case(int test_number) 

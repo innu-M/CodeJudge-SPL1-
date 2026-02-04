@@ -36,4 +36,8 @@ void display_metrics(const CodeMetrics *metrics);
 int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) ;
 int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics);
 
+
+
+void visualize_output_difference(const char *expected, const char *actual);
+
 #endif
