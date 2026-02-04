@@ -73,77 +73,99 @@ void find_lcs_and_highlight(const char *expected, const char *actual)
     int len1 = (int)strlen(expected);
     int len2 = (int)strlen(actual);
 
-    // Build LCS DP table
-    int **lcs = (int **)malloc((len1 + 1) * sizeof(int *));
-    for (int i = 0; i <= len1; i++) {
-        lcs[i] = (int *)calloc((size_t)len2 + 1, sizeof(int));
+    /* Guardrail: character-level DP is O(n*m) memory/time.
+       If outputs are huge, avoid crashing and fallback to a simple diff. */
+    long long cells = (long long)(len1 + 1) * (long long)(len2 + 1);
+    if (cells > 25000000LL) /* ~25M ints => ~100MB table */
+    {
+        printf(BOLD "\n========== OUTPUT DIFFERENCE VISUALIZATION ==========\n" RESET);
+        printf(RED "[Diff is too large for character-level LCS. Showing first mismatch only]\n" RESET);
+        int i = 0;
+        while (expected[i] && actual[i] && expected[i] == actual[i]) i++;
+        printf(GREEN "Expected (around mismatch):\n" RESET);
+        printf("...%.*s\n", 120, expected + (i > 60 ? i - 60 : 0));
+        printf(YELLOW "Actual (around mismatch):\n" RESET);
+        printf("...%.*s\n", 120, actual + (i > 60 ? i - 60 : 0));
+        return;
     }
 
-    for (int i = 1; i <= len1; i++) {
-        for (int j = 1; j <= len2; j++) {
-            if (expected[i - 1] == actual[j - 1]) {
+    /* Build LCS DP table */
+    int **lcs = (int **)malloc((size_t)(len1 + 1) * sizeof(int *));
+    for (int i = 0; i <= len1; i++)
+        lcs[i] = (int *)calloc((size_t)len2 + 1, sizeof(int));
+
+    for (int i = 1; i <= len1; i++)
+    {
+        for (int j = 1; j <= len2; j++)
+        {
+            if (expected[i - 1] == actual[j - 1])
                 lcs[i][j] = lcs[i - 1][j - 1] + 1;
-            } else {
+            else
                 lcs[i][j] = (lcs[i - 1][j] > lcs[i][j - 1]) ? lcs[i - 1][j] : lcs[i][j - 1];
-            }
         }
     }
 
-    // Mark WHICH POSITIONS are in the LCS (this is the key fix)
+    /* Mark positions that are part of the LCS (correct highlighting) */
     unsigned char *match_expected = (unsigned char *)calloc((size_t)len1, 1);
     unsigned char *match_actual   = (unsigned char *)calloc((size_t)len2, 1);
 
     int i = len1, j = len2;
-    while (i > 0 && j > 0) {
-        if (expected[i - 1] == actual[j - 1]) {
+    while (i > 0 && j > 0)
+    {
+        if (expected[i - 1] == actual[j - 1])
+        {
             match_expected[i - 1] = 1;
             match_actual[j - 1] = 1;
             i--; j--;
-        } else if (lcs[i - 1][j] >= lcs[i][j - 1]) {
-            i--;
-        } else {
-            j--;
         }
+        else if (lcs[i - 1][j] >= lcs[i][j - 1])
+            i--;
+        else
+            j--;
     }
 
-    // Reconstruct LCS string (optional, just for display)
+    /* Reconstruct LCS string (for display only) */
     int lcs_len = lcs[len1][len2];
     char *lcs_str = (char *)malloc((size_t)lcs_len + 1);
     lcs_str[lcs_len] = '\0';
 
     i = len1; j = len2;
     int idx = lcs_len;
-    while (i > 0 && j > 0) {
-        if (expected[i - 1] == actual[j - 1]) {
+    while (i > 0 && j > 0)
+    {
+        if (expected[i - 1] == actual[j - 1])
+        {
             lcs_str[--idx] = expected[i - 1];
             i--; j--;
-        } else if (lcs[i - 1][j] >= lcs[i][j - 1]) {
-            i--;
-        } else {
-            j--;
         }
+        else if (lcs[i - 1][j] >= lcs[i][j - 1])
+            i--;
+        else
+            j--;
     }
 
     printf(BOLD "\n========== OUTPUT DIFFERENCE VISUALIZATION ==========\n" RESET);
     printf(BLUE "LCS Length: %d\n" RESET, lcs_len);
     printf(BLUE "Common Subsequence: " RESET "%s\n\n", lcs_str);
 
-    // Print Expected with RED blocks for mismatches
     printf(GREEN "Expected Output (differences in RED):\n" RESET);
     int in_red = 0;
-    for (int k = 0; k < len1; k++) {
+    for (int k = 0; k < len1; k++)
+    {
         char c = expected[k];
-
-        if (c == '\n' || c == '\r') {
+        if (c == '\n' || c == '\r')
+        {
             if (in_red) { printf(RESET); in_red = 0; }
             putchar(c);
             continue;
         }
-
-        if (!match_expected[k]) {
+        if (!match_expected[k])
+        {
             if (!in_red) { printf(RED); in_red = 1; }
             putchar(c);
-        } else {
+        }
+        else
+        {
             if (in_red) { printf(RESET); in_red = 0; }
             putchar(c);
         }
@@ -151,22 +173,24 @@ void find_lcs_and_highlight(const char *expected, const char *actual)
     if (in_red) printf(RESET);
     printf("\n\n");
 
-    // Print Actual with RED blocks for mismatches
     printf(YELLOW "Actual Output (differences in RED):\n" RESET);
     in_red = 0;
-    for (int k = 0; k < len2; k++) {
+    for (int k = 0; k < len2; k++)
+    {
         char c = actual[k];
-
-        if (c == '\n' || c == '\r') {
+        if (c == '\n' || c == '\r')
+        {
             if (in_red) { printf(RESET); in_red = 0; }
             putchar(c);
             continue;
         }
-
-        if (!match_actual[k]) {
+        if (!match_actual[k])
+        {
             if (!in_red) { printf(RED); in_red = 1; }
             putchar(c);
-        } else {
+        }
+        else
+        {
             if (in_red) { printf(RESET); in_red = 0; }
             putchar(c);
         }
