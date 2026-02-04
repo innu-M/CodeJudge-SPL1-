@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <limits.h>
 #include "metrics.h"
 
 #define RED "\033[1;31m"
@@ -32,7 +34,7 @@ void clear_buffer();
 DBuffer* create_buffer();
 void free_buffer(DBuffer *buffer);
 void append_to_buffer(DBuffer *buffer, const char *str);
-void read_file(const char *filename, DBuffer *buffer);
+int read_file(const char *filename, DBuffer *buffer);
 void get_user_input(DBuffer *buffer);
 char* read_string();
 int compile_program(const char *source_file);
@@ -255,14 +257,14 @@ char* read_string()
     return str;
 }
 
-void read_file(const char *filename, DBuffer *buffer) 
+int read_file(const char *filename, DBuffer *buffer) 
 {
     FILE *file = fopen(filename, "r");
     
     if (file == NULL) 
     {
-        printf("File not found: %s\n", filename);
-        return;
+        printf(RED "File not found: %s\n" RESET, filename);
+        return 0;
     }
     
     char line[512];
@@ -282,6 +284,7 @@ void read_file(const char *filename, DBuffer *buffer)
     }
     
     fclose(file);
+    return 1;
 }
 
 void get_user_input(DBuffer *buffer) 
@@ -374,14 +377,24 @@ void get_input_data(DBuffer *buffer)
     {
         get_user_input(buffer);
     } 
-    else 
+    else
     {
-        printf("Input File(path): ");
-        char *input_file = read_string();
-        
-        if (input_file) 
-        {
-            read_file(input_file, buffer);
+        char cwd[PATH_MAX];
+        if (getcwd(cwd, sizeof(cwd))) {
+            printf("Current folder: %s\n", cwd);
+        }
+
+        while (1) {
+            printf("Input File(path): ");
+            char *input_file = read_string();
+            if (!input_file) break;
+
+            if (read_file(input_file, buffer)) {
+                free(input_file);
+                break;
+            }
+
+            printf(CYAN "Tip: if your file is inside the 'test' folder, type: test/<filename>\n" RESET);
             free(input_file);
         }
     }
@@ -402,14 +415,24 @@ void get_expected_output(DBuffer *buffer)
     {
         get_user_input(buffer);
     } 
-    else 
+    else
     {
-        printf("Expected Output File(Path): ");
-        char *output_file = read_string();
-        
-        if (output_file) 
-        {
-            read_file(output_file, buffer);
+        char cwd[PATH_MAX];
+        if (getcwd(cwd, sizeof(cwd))) {
+            printf("Current folder: %s\n", cwd);
+        }
+
+        while (1) {
+            printf("Expected Output File(Path): ");
+            char *output_file = read_string();
+            if (!output_file) break;
+
+            if (read_file(output_file, buffer)) {
+                free(output_file);
+                break;
+            }
+
+            printf(CYAN "Tip: if your file is inside the 'test' folder, type: test/<filename>\n" RESET);
             free(output_file);
         }
     }
@@ -513,8 +536,7 @@ void comparison(const char *input, const char *expected, const char *actual)
     
     printf("Do you want to see the difference visualization? (y/n): ");
     char choice;
-   
-    scanf(" %c", &choice);
+    scanf("%c", &choice);
     clear_buffer();
     
     if (choice == 'y' || choice == 'Y') 
