@@ -512,8 +512,9 @@ void comparison(const char *input, const char *expected, const char *actual)
     printf("Actual Output:\n%s\n", actual);
     
     printf("Do you want to see the difference visualization? (y/n): ");
+    fflush(stdout);
     char choice;
-    scanf("%c", &choice);
+    scanf(" %c", &choice);
     clear_buffer();
     
     if (choice == 'y' || choice == 'Y') 
