@@ -1,225 +1,174 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "metrics.h"
 
-#define RED "\033[1;31m"
-#define GREEN "\033[1;32m"
+#define RED    "\033[1;31m"
+#define GREEN  "\033[1;32m"
 #define YELLOW "\033[1;33m"
-#define BLUE "\033[1;34m"
-#define RESET "\033[0m"
-#define BOLD "\033[1m"
+#define BLUE   "\033[1;34m"
+#define RESET  "\033[0m"
+#define BOLD   "\033[1m"
 
 
 
-
-//ED
-
-int calculate_edit_distance(const char *str1, const char *str2) 
-{
-    int len1 = strlen(str1);
-    int len2 = strlen(str2);
-    
-    
-    int **dp = (int **)malloc((len1 + 1) * sizeof(int *));
-    for (int i = 0; i <= len1; i++) 
-    {
-        dp[i] = (int *)malloc((len2 + 1) * sizeof(int));
-    }
-    
-   
-    for (int i = 0; i <= len1; i++)
-    
-    dp[i][0] = i;
-    for (int j = 0; j <= len2; j++) 
-    dp[0][j] = j;
-    
-  
-    for (int i = 1; i <= len1; i++) 
-    {
-        for (int j = 1; j <= len2; j++) 
-        {
-            if (str1[i-1] == str2[j-1]) 
-            {
-                dp[i][j] = dp[i-1][j-1];
-            }
-             else 
-             {
-                int insert = dp[i][j-1] + 1;
-                int delete = dp[i-1][j] + 1;
-                int replace = dp[i-1][j-1] + 1;
-                
-                dp[i][j] = (insert < delete) ? insert : delete;
-                dp[i][j] = (dp[i][j] < replace) ? dp[i][j] : replace;
-            }
-        }
-    }
-
-     int result = dp[len1][len2];
-    
-     for (int i = 0; i <= len1; i++) {
-        free(dp[i]);
-    }
-    free(dp);
-    
-    return result;
+static size_t count_lines(const char *s) {
+    if (!s || !*s) return 0;
+    size_t lines = 1;
+    for (const char *p = s; *p; p++) if (*p == '\n') lines++;
+    return lines;
 }
 
+static size_t first_mismatch_index(const char *a, const char *b) {
+    size_t i = 0;
+    while (a[i] && b[i] && a[i] == b[i]) i++;
+    if (!a[i] && !b[i]) return (size_t)-1; // identical
+    return i;
+}
 
+static void line_col_at(const char *s, size_t idx, size_t *line, size_t *col) {
+    size_t l = 1, c = 1;
+    for (size_t i = 0; i < idx && s[i]; i++) {
+        if (s[i] == '\n') { l++; c = 1; }
+        else c++;
+    }
+    *line = l; *col = c;
+}
 
+static const char* line_start_at(const char *s, size_t idx) {
+    const char *p = s + idx;
+    while (p > s && p[-1] != '\n') p--;
+    return p;
+}
 
-void find_lcs_and_highlight(const char *expected, const char *actual)
-{
-    int len1 = (int)strlen(expected);
-    int len2 = (int)strlen(actual);
+static const char* line_end_at(const char *s, size_t idx) {
+    const char *p = s + idx;
+    while (*p && *p != '\n') p++;
+    return p;
+}
 
-    /* Guardrail: character-level DP is O(n*m) memory/time.
-       If outputs are huge, avoid crashing and fallback to a simple diff. */
-    long long cells = (long long)(len1 + 1) * (long long)(len2 + 1);
-    if (cells > 25000000LL) /* ~25M ints => ~100MB table */
-    {
-        printf(BOLD "\n========== OUTPUT DIFFERENCE VISUALIZATION ==========\n" RESET);
-        printf(RED "[Diff is too large for character-level LCS. Showing first mismatch only]\n" RESET);
-        int i = 0;
-        while (expected[i] && actual[i] && expected[i] == actual[i]) i++;
-        printf(GREEN "Expected (around mismatch):\n" RESET);
-        printf("...%.*s\n", 120, expected + (i > 60 ? i - 60 : 0));
-        printf(YELLOW "Actual (around mismatch):\n" RESET);
-        printf("...%.*s\n", 120, actual + (i > 60 ? i - 60 : 0));
-        return;
+static void print_line_with_caret(const char *prefix, const char *line_start, const char *line_end, size_t caret_col_1based) {
+    
+    const size_t MAX_SHOW = 160;
+
+    size_t line_len = (size_t)(line_end - line_start);
+    size_t caret0 = (caret_col_1based > 0 ? caret_col_1based - 1 : 0);
+
+    size_t show_start = 0;
+    size_t show_len = line_len;
+
+    if (line_len > MAX_SHOW) {
+        
+        size_t half = MAX_SHOW / 2;
+        if (caret0 > half) show_start = caret0 - half;
+        if (show_start + MAX_SHOW > line_len) show_start = line_len - MAX_SHOW;
+        show_len = MAX_SHOW;
     }
 
-    /* Build LCS DP table */
-    int **lcs = (int **)malloc((size_t)(len1 + 1) * sizeof(int *));
-    for (int i = 0; i <= len1; i++)
-        lcs[i] = (int *)calloc((size_t)len2 + 1, sizeof(int));
+    
+    printf("%s", prefix);
+    fwrite(line_start + show_start, 1, show_len, stdout);
+    putchar('\n');
 
-    for (int i = 1; i <= len1; i++)
-    {
-        for (int j = 1; j <= len2; j++)
-        {
-            if (expected[i - 1] == actual[j - 1])
-                lcs[i][j] = lcs[i - 1][j - 1] + 1;
-            else
-                lcs[i][j] = (lcs[i - 1][j] > lcs[i][j - 1]) ? lcs[i - 1][j] : lcs[i][j - 1];
-        }
+   
+    if (caret0 >= show_start && caret0 < show_start + show_len) {
+        size_t caret_in_slice = caret0 - show_start;
+        
+        size_t prefix_len = strlen(prefix);
+        for (size_t i = 0; i < prefix_len + caret_in_slice; i++) putchar(' ');
+        printf(RED "^\n" RESET);
     }
-
-    /* Mark positions that are part of the LCS (correct highlighting) */
-    unsigned char *match_expected = (unsigned char *)calloc((size_t)len1, 1);
-    unsigned char *match_actual   = (unsigned char *)calloc((size_t)len2, 1);
-
-    int i = len1, j = len2;
-    while (i > 0 && j > 0)
-    {
-        if (expected[i - 1] == actual[j - 1])
-        {
-            match_expected[i - 1] = 1;
-            match_actual[j - 1] = 1;
-            i--; j--;
-        }
-        else if (lcs[i - 1][j] >= lcs[i][j - 1])
-            i--;
-        else
-            j--;
+    if (line_len > MAX_SHOW) {
+        printf(BLUE "  [line truncated]\n" RESET);
     }
+}
 
-    /* Reconstruct LCS string (for display only) */
-    int lcs_len = lcs[len1][len2];
-    char *lcs_str = (char *)malloc((size_t)lcs_len + 1);
-    lcs_str[lcs_len] = '\0';
+static void print_context_window(const char *label, const char *s, size_t mismatch_line, size_t mismatch_col,
+                                 size_t ctx_before, size_t ctx_after, int caret_here) {
+    printf(BOLD "%s\n" RESET, label);
 
-    i = len1; j = len2;
-    int idx = lcs_len;
-    while (i > 0 && j > 0)
-    {
-        if (expected[i - 1] == actual[j - 1])
-        {
-            lcs_str[--idx] = expected[i - 1];
-            i--; j--;
-        }
-        else if (lcs[i - 1][j] >= lcs[i][j - 1])
-            i--;
-        else
-            j--;
-    }
+    size_t cur_line = 1;
+    const char *p = s;
 
-    printf(BOLD "\n========== OUTPUT DIFFERENCE VISUALIZATION ==========\n" RESET);
-    printf(BLUE "LCS Length: %d\n" RESET, lcs_len);
-    printf(BLUE "Common Subsequence: " RESET "%s\n\n", lcs_str);
+    while (*p) {
+        const char *ls = p;
+        const char *le = p;
+        while (*le && *le != '\n') le++;
 
-    printf(GREEN "Expected Output (differences in RED):\n" RESET);
-    int in_red = 0;
-    for (int k = 0; k < len1; k++)
-    {
-        char c = expected[k];
-        if (c == '\n' || c == '\r')
-        {
-            if (in_red) { printf(RESET); in_red = 0; }
-            putchar(c);
+        if (cur_line + ctx_after < mismatch_line) {
+            
+            p = (*le == '\n') ? le + 1 : le;
+            cur_line++;
             continue;
         }
-        if (!match_expected[k])
-        {
-            if (!in_red) { printf(RED); in_red = 1; }
-            putchar(c);
-        }
-        else
-        {
-            if (in_red) { printf(RESET); in_red = 0; }
-            putchar(c);
-        }
-    }
-    if (in_red) printf(RESET);
-    printf("\n\n");
+        if (cur_line + ctx_before > mismatch_line + ctx_after) break;
 
-    printf(YELLOW "Actual Output (differences in RED):\n" RESET);
-    in_red = 0;
-    for (int k = 0; k < len2; k++)
-    {
-        char c = actual[k];
-        if (c == '\n' || c == '\r')
-        {
-            if (in_red) { printf(RESET); in_red = 0; }
-            putchar(c);
-            continue;
-        }
-        if (!match_actual[k])
-        {
-            if (!in_red) { printf(RED); in_red = 1; }
-            putchar(c);
-        }
-        else
-        {
-            if (in_red) { printf(RESET); in_red = 0; }
-            putchar(c);
-        }
-    }
-    if (in_red) printf(RESET);
-    printf("\n");
+      
+        char prefix[64];
+        snprintf(prefix, sizeof(prefix), "  %5zu | ", cur_line);
 
-    for (int k = 0; k <= len1; k++) free(lcs[k]);
-    free(lcs);
-    free(lcs_str);
-    free(match_expected);
-    free(match_actual);
+        if (caret_here && cur_line == mismatch_line) {
+            
+            print_line_with_caret(prefix, ls, le, mismatch_col);
+        } else {
+            
+            size_t len = (size_t)(le - ls);
+            const size_t MAX_SHOW = 160;
+            printf("%s", prefix);
+            if (len <= MAX_SHOW) fwrite(ls, 1, len, stdout);
+            else { fwrite(ls, 1, MAX_SHOW, stdout); printf(BLUE " ...[truncated]" RESET); }
+            putchar('\n');
+        }
+
+      
+        p = (*le == '\n') ? le + 1 : le;
+        if (*le == '\0') break;
+        cur_line++;
+    }
 }
 
 void visualize_output_difference(const char *expected, const char *actual) {
-    printf(BOLD "\n============ DETAILED OUTPUT ANALYSIS ============\n" RESET);
-    
+    size_t len_e = strlen(expected);
+    size_t len_a = strlen(actual);
+    size_t lines_e = count_lines(expected);
+    size_t lines_a = count_lines(actual);
 
-    int edit_dist = calculate_edit_distance(expected, actual);
-    int max_len = (strlen(expected) > strlen(actual)) ? strlen(expected) : strlen(actual);
-    double similarity = (max_len > 0) ? (1.0 - ((double)edit_dist / max_len)) * 100.0 : 100.0;
+    printf(BOLD "\n============ OUTPUT DIFF (CLEAR VIEW) ============\n" RESET);
+    printf("Expected: %zu chars, %zu lines\n", len_e, lines_e);
+    printf("Actual:   %zu chars, %zu lines\n", len_a, lines_a);
+
+    size_t mm = first_mismatch_index(expected, actual);
+    if (mm == (size_t)-1) {
+        printf(GREEN "\nOutputs match exactly.\n" RESET);
+        printf(BOLD "==================================================\n\n" RESET);
+        return;
+    }
+
+
+    size_t le, ce, la, ca;
+    line_col_at(expected, mm, &le, &ce);
+    line_col_at(actual,   mm, &la, &ca);
+
+    printf(RED "\nFirst mismatch at index %zu\n" RESET, mm);
+
     
-    printf("Expected Length: %lu characters\n", strlen(expected));
-    printf("Actual Length: %lu characters\n", strlen(actual));
-    printf(YELLOW "Edit Distance: %d\n" RESET, edit_dist);
-    printf(BLUE "Similarity: %.2f%%\n" RESET, similarity);
+    if (expected[mm] == '\0') printf(YELLOW "Expected ended early (EOF), but actual continues.\n" RESET);
+    else if (actual[mm] == '\0') printf(YELLOW "Actual ended early (EOF), but expected continues.\n" RESET);
+    else {
+        unsigned char e = (unsigned char)expected[mm];
+        unsigned char a = (unsigned char)actual[mm];
+        printf("Expected char: '%c' (0x%02X)\n", (e>=32 && e<127)?e:'.', e);
+        printf("Actual char:   '%c' (0x%02X)\n", (a>=32 && a<127)?a:'.', a);
+    }
+
+    printf("\nExpected location: line %zu, col %zu\n", le, ce);
+    printf("Actual location:   line %zu, col %zu\n\n", la, ca);
+
+
+    const size_t CTX_BEFORE = 2, CTX_AFTER = 2;
+    print_context_window("Expected (context):", expected, le, ce, CTX_BEFORE, CTX_AFTER, 1);
+    printf("\n");
+    print_context_window("Actual (context):", actual, la, ca, CTX_BEFORE, CTX_AFTER, 1);
+
+    printf(BOLD "\nTip:" RESET " If this is a big output, fix the first mismatch first—later mismatches often disappear.\n");
     
-    
-    find_lcs_and_highlight(expected, actual);
-    
-    printf(BOLD "====================================================\n\n" RESET);
 }
