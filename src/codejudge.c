@@ -119,9 +119,66 @@ int main()
                 code_metrics(source_file);
                 break;
                 
-            case 4:
-                printf("\nExiting CodeJudge\n");
-                break;
+          case 4:
+            printf("\n========== ADVANCED COMPLEXITY ANALYSIS ==========\n");
+            calculate_cyclomatic_complexity(source_file, &metrics);
+            calculate_cognitive_complexity(source_file, &metrics);
+            
+            printf("\nCyclomatic Complexity: %d\n", metrics.cyclomatic_complexity);
+            printf("Decision Points: %d\n", metrics.decision_points);
+            printf("\nInterpretation:\n");
+            if (metrics.cyclomatic_complexity <= 10) {
+                printf(GREEN "  Low complexity - Easy to test and maintain\n" RESET);
+            } else if (metrics.cyclomatic_complexity <= 20) {
+                printf(YELLOW " Moderate complexity - Consider refactoring\n" RESET);
+            } else {
+                printf(RED "  High complexity - Refactoring recommended\n" RESET);
+            }
+            
+            printf("\nCognitive Complexity: %d\n", metrics.cognitive_complexity);
+            printf("Maximum Nesting Level: %d\n", metrics.max_nesting);
+            printf("\nInterpretation:\n");
+            if (metrics.cognitive_complexity <= 15) {
+                printf(GREEN "  Easy to understand\n" RESET);
+            } else if (metrics.cognitive_complexity <= 30) {
+                printf(YELLOW " Moderately complex - May need simplification\n" RESET);
+            } else {
+                printf(RED "  Difficult to understand - Simplification needed\n" RESET);
+            }
+            break;
+
+        case 5:
+            printf("\n========== BUFFER OVERFLOW RISK ANALYSIS ==========\n");
+            detect_buffer_overflow_risk(source_file, &metrics);
+            
+            printf("Risk Score: %d\n", metrics.buffer_overflow_risk);
+            printf("Unsafe Functions Found: %d\n", metrics.unsafe_functions_count);
+            printf("Fixed-size Buffers: %d\n\n", metrics.fixed_buffer_count);
+            
+            if (metrics.unsafe_functions_count > 0) {
+                printf(RED "Unsafe functions detected:\n" RESET);
+                for (int i = 0; i < metrics.unsafe_functions_count; i++) {
+                    printf("  - %s()\n", metrics.unsafe_functions[i]);
+                }
+                printf("\nRecommendations:\n");
+                printf("  • Replace gets() with fgets()\n");
+                printf("  • Replace strcpy() with strncpy()\n");
+                printf("  • Replace strcat() with strncat()\n");
+                printf("  • Use width specifiers in scanf() (e.g., %%20s)\n");
+            }
+            
+            printf("\nOverall Risk Level: ");
+            if (metrics.buffer_overflow_risk < 10) {
+                printf(GREEN "LOW\n" RESET);
+            } else if (metrics.buffer_overflow_risk < 30) {
+                printf(YELLOW "MEDIUM\n" RESET);
+            } else {
+                printf(RED "HIGH - Immediate attention required!\n" RESET);
+            }
+            break;
+            case 6:
+                printf("Exiting...\n");
+                return 0;
                 
             default:
                 printf("Invalid choice\n");
@@ -160,14 +217,15 @@ void display_header()
 
 void display_menu() 
 {
-                    printf(CYAN "\n=================== MENU ===================\n" RESET);
-                    printf("                1. Run Test Case\n");
-                    printf("                2. View Test Results\n");
-                    printf("                3. Analyze Code Metrics\n");
-                    printf("                4. Exit\n");
-                    printf(CYAN "============================================\n" RESET);
+    printf(CYAN "\n=================== MENU ===================\n" RESET);
+    printf("                1. Run Test Case\n");
+    printf("                2. View Test Results\n");
+    printf("                3. Analyze Code Metrics\n");
+    printf("                4. Advanced Metrics (Cyclomatic & Cognitive)\n");
+    printf("                5. Buffer Overflow Risk Analysis\n");
+    printf("                6. Exit\n");
+    printf(CYAN "============================================\n" RESET);
 }
-
 void clear_buffer() 
 {
     int c;

@@ -43,4 +43,6 @@ int calculate_edit_distance(const char *str1, const char *str2);
 void find_lcs_and_highlight(const char *expected, const char *actual);
 
 
+int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics);
+
 #endif
