@@ -17,8 +17,7 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
     int in_comment = 0;
     
     while (fgets(line, sizeof(line), file)) {
-        // Handle multi-line comments
-        char *comment_start = strstr(line, "/*");
+       char *comment_start = strstr(line, "/*");
         char *comment_end = strstr(line, "*/");
         
         if (comment_start) {
@@ -32,13 +31,11 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
         
         if (in_comment) continue;
         
-        // Skip single-line comments
         char *single_comment = strstr(line, "//");
         if (single_comment) {
             *single_comment = '\0';
         }
         
-        // Track nesting level with braces
         for (int i = 0; line[i] != '\0'; i++) {
             if (line[i] == '{') {
                 current_nesting++;
@@ -52,13 +49,12 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             }
         }
         
-        // Analyze control structures
+        
         char *ptr = line;
         
-        // Check for 'if' statements
+
         while ((ptr = strstr(ptr, "if")) != NULL) {
-            // Make sure it's a keyword, not part of another word
-            if ((ptr == line || !isalnum(*(ptr-1))) && 
+           if ((ptr == line || !isalnum(*(ptr-1))) && 
                 !isalnum(ptr[2]) && 
                 strchr(ptr, '(') != NULL) {
                 cognitive_score += (1 + (current_nesting > 0 ? current_nesting - 1 : 0));
@@ -66,7 +62,7 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             ptr += 2;
         }
         
-        // Check for 'else'
+       
         ptr = line;
         while ((ptr = strstr(ptr, "else")) != NULL) {
             if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[4])) {
@@ -75,7 +71,7 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             ptr += 4;
         }
         
-        // Check for 'while' loops
+        
         ptr = line;
         while ((ptr = strstr(ptr, "while")) != NULL) {
             if ((ptr == line || !isalnum(*(ptr-1))) && 
@@ -86,7 +82,7 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             ptr += 5;
         }
         
-        // Check for 'for' loops
+       
         ptr = line;
         while ((ptr = strstr(ptr, "for")) != NULL) {
             if ((ptr == line || !isalnum(*(ptr-1))) && 
@@ -97,7 +93,7 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             ptr += 3;
         }
         
-        // Check for 'switch'
+        
         ptr = line;
         while ((ptr = strstr(ptr, "switch")) != NULL) {
             if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[6])) {
