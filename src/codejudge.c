@@ -10,6 +10,9 @@
 #define RED "\033[1;31m"
 #define GREEN "\033[1;32m"
 #define CYAN "\033[1;36m"
+#define YELLOW "\033[1;33m" 
+#define BLUE "\033[1;34m"    
+#define BOLD "\033[1m"       
 #define RESET "\033[0m"
 
 typedef struct {
@@ -71,7 +74,7 @@ int main()
     
     int passed = 0;
     int choice;
-    
+    CodeMetrics metrics = {0};
     do 
     {
         display_menu();
@@ -184,13 +187,13 @@ int main()
                 printf("Invalid choice\n");
         }
         
-        if (choice != 4) 
+        if (choice != 6) 
         {
             printf("\nPress Enter to continue...");
             clear_buffer();
         }
         
-    } while (choice != 4);
+    } while (choice != 6);
     
     for (int i = 0; i < total_tests; i++) 
     {

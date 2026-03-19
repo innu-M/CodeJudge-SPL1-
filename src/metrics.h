@@ -24,6 +24,12 @@ typedef struct {
     int cognitive_complexity;
     int nesting_level;
     int max_nesting;
+
+
+    int buffer_overflow_risk;
+    int unsafe_functions_count;
+    int fixed_buffer_count;
+    char unsafe_functions[500][50];
     
 } CodeMetrics;
 

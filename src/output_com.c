@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "metrics.h"
 
 #define RED    "\033[1;31m"
 #define GREEN  "\033[1;32m"
