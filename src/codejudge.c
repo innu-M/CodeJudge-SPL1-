@@ -130,6 +130,7 @@ int main()
             printf("\nCyclomatic Complexity: %d\n", metrics.cyclomatic_complexity);
             printf("Decision Points: %d\n", metrics.decision_points);
             printf("\nInterpretation:\n");
+
             if (metrics.cyclomatic_complexity <= 10) {
                 printf(GREEN "  Low complexity - Easy to test and maintain\n" RESET);
             } else if (metrics.cyclomatic_complexity <= 20) {
@@ -142,11 +143,11 @@ int main()
             printf("Maximum Nesting Level: %d\n", metrics.max_nesting);
             printf("\nInterpretation:\n");
             if (metrics.cognitive_complexity <= 15) {
-                printf(GREEN "  Easy to understand\n" RESET);
+                printf(GREEN "Easy to understand\n" RESET);
             } else if (metrics.cognitive_complexity <= 30) {
                 printf(YELLOW " Moderately complex - May need simplification\n" RESET);
             } else {
-                printf(RED "  Difficult to understand - Simplification needed\n" RESET);
+                printf(RED "Difficult to understand - Simplification needed\n" RESET);
             }
             break;
 
