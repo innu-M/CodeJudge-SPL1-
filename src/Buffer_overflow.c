@@ -40,7 +40,8 @@ int extract_buffer_size(const char *line) {
     const char *start = strchr(line, '[');
     const char *end = strchr(line, ']');
     
-    if (!start || !end || end <= start) return -1;
+    if (!start || !end || end <= start) 
+    return -1;
     
     char size_str[20] = {0};
     int len = end - start - 1;
@@ -63,7 +64,7 @@ int is_taint_source(const char *line) {
     return 0;
 }
 
-int detect_buffer_overflow_advanced(const char *filename, CodeMetrics *metrics) {
+int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Error: Cannot open file(buffer_overflow)\n");

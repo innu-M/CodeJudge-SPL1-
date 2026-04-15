@@ -279,6 +279,6 @@ void display_metrics(const CodeMetrics *metrics) {
     printf("                      Effort (E): %.2f\n", metrics->halstead_effort);
 
 
-     //comments           
+              
      
 }
