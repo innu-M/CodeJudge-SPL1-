@@ -13,24 +13,32 @@
 
 
 static size_t count_lines(const char *s) {
+
     if (!s || !*s) return 0;
     size_t lines = 1;
-    for (const char *p = s; *p; p++) if (*p == '\n') lines++;
+    for (const char *p = s; *p; p++)
+     if (*p == '\n')
+      lines++;
+
     return lines;
 }
 
 static size_t first_mismatch_index(const char *a, const char *b) {
     size_t i = 0;
-    while (a[i] && b[i] && a[i] == b[i]) i++;
-    if (!a[i] && !b[i]) return (size_t)-1; // identical
+    while (a[i] && b[i] && a[i] == b[i])
+    i++;
+    if (!a[i] && !b[i])
+     return (size_t)-1; // identical
     return i;
 }
 
 static void line_col_at(const char *s, size_t idx, size_t *line, size_t *col) {
     size_t l = 1, c = 1;
     for (size_t i = 0; i < idx && s[i]; i++) {
-        if (s[i] == '\n') { l++; c = 1; }
-        else c++;
+        if (s[i] == '\n')
+         { l++; c = 1; }
+        else
+         c++;
     }
     *line = l; *col = c;
 }
@@ -52,7 +60,15 @@ static void print_line_with_caret(const char *prefix, const char *line_start, co
     const size_t MAX_SHOW = 160;
 
     size_t line_len = (size_t)(line_end - line_start);
-    size_t caret0 = (caret_col_1based > 0 ? caret_col_1based - 1 : 0);
+    size_t caret0;
+
+            if (caret_col_1based > 0) {
+                caret0 = caret_col_1based - 1;
+            }
+            else {
+                caret0 = 0;
+            }
+
 
     size_t show_start = 0;
     size_t show_len = line_len;
@@ -60,9 +76,15 @@ static void print_line_with_caret(const char *prefix, const char *line_start, co
     if (line_len > MAX_SHOW) {
         
         size_t half = MAX_SHOW / 2;
-        if (caret0 > half) show_start = caret0 - half;
-        if (show_start + MAX_SHOW > line_len) show_start = line_len - MAX_SHOW;
-        show_len = MAX_SHOW;
+
+        if (caret0 > half)
+         show_start = caret0 - half;
+        
+         if (show_start + MAX_SHOW > line_len) 
+        
+    show_start = line_len - MAX_SHOW;
+    
+    show_len = MAX_SHOW;
     }
 
     
@@ -75,10 +97,12 @@ static void print_line_with_caret(const char *prefix, const char *line_start, co
         size_t caret_in_slice = caret0 - show_start;
         
         size_t prefix_len = strlen(prefix);
-        for (size_t i = 0; i < prefix_len + caret_in_slice; i++) putchar(' ');
+        for (size_t i = 0; i < prefix_len + caret_in_slice; i++)
+         putchar(' ');
         printf(RED "^\n" RESET);
     }
-    if (line_len > MAX_SHOW) {
+    if (line_len > MAX_SHOW)
+     {
         printf(BLUE "  [line truncated]\n" RESET);
     }
 }
@@ -102,7 +126,9 @@ static void print_context_window(const char *label, const char *s, size_t mismat
             cur_line++;
             continue;
         }
-        if (cur_line + ctx_before > mismatch_line + ctx_after) break;
+        
+        if (cur_line + ctx_before > mismatch_line + ctx_after) 
+        break;
 
       
         char prefix[64];
@@ -143,7 +169,7 @@ void visualize_output_difference(const char *expected, const char *actual) {
     size_t lines_e = count_lines(expected);
     size_t lines_a = count_lines(actual);
 
-    printf(BOLD "\n============ OUTPUT DIFF (CLEAR VIEW) ============\n" RESET);
+    printf(BOLD "\n============ OUTPUT DIFFERENCE============\n" RESET);
     printf("Expected: %zu chars, %zu lines\n", len_e, lines_e);
     printf("Actual:   %zu chars, %zu lines\n", len_a, lines_a);
 
@@ -162,9 +188,18 @@ void visualize_output_difference(const char *expected, const char *actual) {
     printf(RED "\nFirst mismatch at index %zu\n" RESET, mm);
 
     
-    if (expected[mm] == '\0') printf(YELLOW "Expected ended early (EOF), but actual continues.\n" RESET);
-    else if (actual[mm] == '\0') printf(YELLOW "Actual ended early (EOF), but expected continues.\n" RESET);
-    else {
+    if (expected[mm] == '\0') 
+    {
+        printf(YELLOW "Expected ended early (EOF), but actual continues.\n" RESET);
+    }
+    else if (actual[mm] == '\0') 
+    {
+        printf(YELLOW "Actual ended early (EOF), but expected continues.\n" RESET);
+    }
+
+    else 
+    
+    {
         unsigned char e = (unsigned char)expected[mm];
         unsigned char a = (unsigned char)actual[mm];
         printf("Expected char: '%c' (0x%02X)\n", (e>=32 && e<127)?e:'.', e);
