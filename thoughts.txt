@@ -1,10 +1,2 @@
-1.work with input paths
-2.compile
-3.error detection
-4.output comparison
-5.report
-
-6.metrics
-7.Halstead
-8.loc
-9.Cyclomatic
+//
+1.add flexible runtime.like the user can change 10 s to any time

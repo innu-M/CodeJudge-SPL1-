@@ -152,6 +152,7 @@ int main()
             case 2:
                 if (s->total_tests > 0) 
                     display_result(s->passed, s->total_tests, s->test_results);
+
                 else 
                     printf("No test cases run yet\n");
                 break;
@@ -168,19 +169,31 @@ int main()
                 printf("\nCyclomatic Complexity: %d\n", metrics.cyclomatic_complexity);
                 printf("Decision Points: %d\n", metrics.decision_points);
                 printf("\nInterpretation:\n");
+
+
+
+                //recommend
                 if (metrics.cyclomatic_complexity <= 10)
                     printf(GREEN "  Low complexity - Easy to test and maintain\n" RESET);
+
                 else if (metrics.cyclomatic_complexity <= 20)
                     printf(YELLOW " Moderate complexity - Consider refactoring\n" RESET);
+
+
                 else
                     printf(RED "  High complexity - Refactoring recommended\n" RESET);
                 
                 printf("\nCognitive Complexity: %d\n", metrics.cognitive_complexity);
+
+
                 printf("Maximum Nesting Level: %d\n", metrics.max_nesting);
                 printf("\nInterpretation:\n");
+
+
                 if (metrics.cognitive_complexity <= 15)
                     printf(GREEN "Easy to understand\n" RESET);
-                else if (metrics.cognitive_complexity <= 30)
+                
+                    else if (metrics.cognitive_complexity <= 30)
                     printf(YELLOW " Moderately complex - May need simplification\n" RESET);
                 else
                     printf(RED "Difficult to understand - Simplification needed\n" RESET);
@@ -197,8 +210,11 @@ int main()
                 printf("\nOverall Risk Level: ");
                 if (metrics.buffer_overflow_risk < 10)
                     printf(GREEN "LOW\n" RESET);
+
+
                 else if (metrics.buffer_overflow_risk < 30)
                     printf(YELLOW "MEDIUM\n" RESET);
+
                 else
                     printf(RED "HIGH - Immediate attention required!\n" RESET);
                 break;
@@ -209,7 +225,8 @@ int main()
                 char *new_file = read_string();
                 if (new_file && new_session(new_file)) {
                     FileSession *ns = &sessions[current_session];
-                    if (!compile_program(ns->source_file, ns->binary_name)) {
+                    if (!compile_program(ns->source_file, ns->binary_name)) 
+                    {
                         
                         free(ns->source_file);
                         session_count--;
@@ -229,8 +246,15 @@ int main()
                 }
                 printf("Loaded files:\n");
                 for (int i = 0; i < session_count; i++)
-                    printf("  %d. %s%s\n", i + 1, sessions[i].source_file,
-                           i == current_session ? " [active]" : "");
+                   if (i == current_session) {
+                    printf("  %d. %s%s\n", i + 1, sessions[i].source_file, " [active]");
+                      }
+                            
+                     else 
+                    {
+                      printf("  %d. %s%s\n", i + 1, sessions[i].source_file, "");
+                    }
+
                 printf("Switch to (number): ");
                 int pick;
                 scanf("%d", &pick);
@@ -278,11 +302,19 @@ int main()
 
 void display_header() 
 {
-    printf(CYAN "================================================\n" RESET);
-    printf(CYAN "                                                \n" RESET);
-    printf(CYAN "                   CODEJUDGE                    \n" RESET);
-    printf(CYAN "                                                \n" RESET);
-    printf(CYAN "================================================\n\n" RESET);
+    printf("\033[1m\033\e[1;36m");
+
+    printf("\n\n\n");
+
+    printf("   ██████╗ ██████╗ ██████╗ ███████╗     ██╗██╗   ██╗██████╗  ██████╗ ███████╗\n");
+    printf("  ██╔════╝██╔═══██╗██╔══██╗██╔════╝     ██║██║   ██║██╔══██╗██╔════╝ ██╔════╝\n");
+    printf("  ██║     ██║   ██║██║  ██║█████╗       ██║██║   ██║██║  ██║██║  ███╗█████╗  \n");
+    printf("  ██║     ██║   ██║██║  ██║██╔══╝  ██   ██║██║   ██║██║  ██║██║   ██║██╔══╝  \n");
+    printf("  ╚██████╗╚██████╔╝██████╔╝███████╗╚█████╔╝╚██████╔╝██████╔╝╚██████╔╝███████╗\n");
+    printf("   ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝ ╚════╝  ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝\n");
+    printf("\n\n\n");
+    printf("\033[0m");
+       
 }
 
 void display_menu() 
@@ -516,7 +548,7 @@ void get_input_data(DBuffer *buffer)
                 break;
             }
 
-            printf(CYAN "Tip: if your file is inside the 'test' folder, type: test/<filename>\n" RESET);
+            printf(CYAN "Help: if your file is inside the 'test' folder, type: test/<filename>\n" RESET);
             free(input_file);
         }
     }
@@ -553,7 +585,7 @@ void get_expected_output(DBuffer *buffer)
                 break;
             }
 
-            printf(CYAN "Tip: if your file is inside the 'test' folder, type: test/<filename>\n" RESET);
+            printf(CYAN "Help: if your file is inside the 'test' folder, type: test/<filename>\n" RESET);
             free(output_file);
         }
     }
@@ -621,8 +653,10 @@ void run_program_and_CtO(DBuffer *buffer, const char *binary, const char *input_
             
             if (signal_num == SIGSEGV)
                 snprintf(error_msg, sizeof(error_msg), "\n[RUNTIME ERROR: Segmentation fault]");
+
             else if (signal_num == SIGFPE)
                 snprintf(error_msg, sizeof(error_msg), "\n[RUNTIME ERROR: Floating point exception]");
+
             else if (signal_num == SIGABRT)
                 snprintf(error_msg, sizeof(error_msg), "\n[RUNTIME ERROR: Program aborted]");
             else
@@ -757,8 +791,17 @@ void display_result(int passed, int total, TestResult *test_results)
 
     for (int i = 0; i < total; i++) 
     {
-        printf(" Test %d: %s", test_results[i].test_number, 
-               test_results[i].passed ? "PASS" : "FAIL");
+       if (test_results[i].passed) {
+    printf(" Test %d: %s", test_results[i].test_number, "PASS");
+        }
+        
+    else 
+    {
+    printf(" Test %d: %s", test_results[i].test_number, "FAIL");
+    }
+
+
+
         if (!test_results[i].passed && strlen(test_results[i].error_msg) > 0) 
             printf(" (%s)", test_results[i].error_msg);
         printf("\n");

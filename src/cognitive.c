@@ -63,7 +63,11 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
            if ((ptr == line || !isalnum(*(ptr-1))) && 
                 !isalnum(ptr[2]) && 
                 strchr(ptr, '(') != NULL) {
-                cognitive_score += (1 + (current_nesting > 0 ? current_nesting - 1 : 0));
+                if (current_nesting > 0) {
+                    cognitive_score += (1 + (current_nesting - 1));
+                } else {
+                    cognitive_score += (1 + 0);
+                }
             }
             ptr += 2;
         }
@@ -85,7 +89,12 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             if ((ptr == line || !isalnum(*(ptr-1))) && 
                 !isalnum(ptr[5]) && 
                 strchr(ptr, '(') != NULL) {
-                cognitive_score += (1 + (current_nesting > 0 ? current_nesting - 1 : 0));
+                if (current_nesting > 0) {
+                    cognitive_score += 1 + (current_nesting - 1);
+                } 
+                else {
+                    cognitive_score += 1 + 0;
+                }
             }
             ptr += 5;
         }
@@ -97,7 +106,13 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             if ((ptr == line || !isalnum(*(ptr-1))) && 
                 !isalnum(ptr[3]) && 
                 strchr(ptr, '(') != NULL) {
-                cognitive_score += (1 + (current_nesting > 0 ? current_nesting - 1 : 0));
+                if (current_nesting > 0) {
+                    cognitive_score += 1 + (current_nesting - 1);
+                } 
+                else {
+                    cognitive_score += 1 + 0;
+                }
+
             }
             ptr += 3;
         }
@@ -107,7 +122,12 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
         while ((ptr = strstr(ptr, "switch")) != NULL) 
         {
             if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[6])) {
-                cognitive_score += (1 + (current_nesting > 0 ? current_nesting - 1 : 0));
+                if (current_nesting > 0) {
+                    cognitive_score += (1 + (current_nesting - 1));
+                } else {
+                    cognitive_score += (1 + 0);
+                }
+
             }
             ptr += 6;
         }
@@ -153,7 +173,14 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
         
         if (strchr(line, '?') != NULL && strchr(line, ':') != NULL) 
         {
-            cognitive_score += (1 + (current_nesting > 0 ? current_nesting - 1 : 0));
+            if (current_nesting > 0) {
+                cognitive_score += (1 + (current_nesting - 1));
+            } 
+            else 
+             {
+            cognitive_score += (1 + 0);
+            }
+
         }
     }
     

@@ -202,6 +202,8 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) {
     metrics->fixed_buffer_count = analysis.count;
     
     printf("\nRisk Level: ");
+
+    
     if (metrics->buffer_overflow_risk < 10) {
         printf("\033[1;32mLOW\033[0m\n");
     }

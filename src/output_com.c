@@ -95,7 +95,8 @@ static void print_context_window(const char *label, const char *s, size_t mismat
         const char *le = p;
         while (*le && *le != '\n') le++;
 
-        if (cur_line + ctx_after < mismatch_line) {
+        if (cur_line + ctx_after < mismatch_line)
+         {
             
             p = (*le == '\n') ? le + 1 : le;
             cur_line++;
@@ -107,16 +108,25 @@ static void print_context_window(const char *label, const char *s, size_t mismat
         char prefix[64];
         snprintf(prefix, sizeof(prefix), "  %5zu | ", cur_line);
 
-        if (caret_here && cur_line == mismatch_line) {
+        if (caret_here && cur_line == mismatch_line) 
+        {
             
             print_line_with_caret(prefix, ls, le, mismatch_col);
-        } else {
+        } 
+        
+        else 
+        {
             
             size_t len = (size_t)(le - ls);
             const size_t MAX_SHOW = 160;
             printf("%s", prefix);
-            if (len <= MAX_SHOW) fwrite(ls, 1, len, stdout);
-            else { fwrite(ls, 1, MAX_SHOW, stdout); printf(BLUE " ...[truncated]" RESET); }
+            if (len <= MAX_SHOW) 
+            fwrite(ls, 1, len, stdout);
+
+            else
+             { fwrite(ls, 1, MAX_SHOW, stdout);
+                 printf(BLUE " ...[truncated]" RESET);
+                 }
             putchar('\n');
         }
 
