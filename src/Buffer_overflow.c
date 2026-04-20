@@ -15,7 +15,7 @@ typedef struct {
 } BufferTracker;
 
 typedef struct {
-    BufferTracker buffers[MAX_BUFFERS];
+    BufferTracker *buffers;  
     int count;
     int overflow_count;
     int taint_violations;
@@ -23,10 +23,13 @@ typedef struct {
 
 void extract_var_name(const char *line, char *var_name) {
     const char *ptr = strstr(line, "char");
-    if (!ptr) return;
+
+    if (!ptr)
+     return;
     
     ptr += 4;
-    while (*ptr == ' ' || *ptr == '\t') ptr++;
+    while (*ptr == ' ' || *ptr == '\t')
+     ptr++;
     
     int i = 0;
     while (*ptr && (isalnum(*ptr) || *ptr == '_')) {
@@ -36,7 +39,9 @@ void extract_var_name(const char *line, char *var_name) {
     var_name[i] = '\0';
 }
 
-int extract_buffer_size(const char *line) {
+int extract_buffer_size(const char *line) 
+
+{
     const char *start = strchr(line, '[');
     const char *end = strchr(line, ']');
     
@@ -48,7 +53,8 @@ int extract_buffer_size(const char *line) {
     
     if (len > 0 && len < 20) {
         strncpy(size_str, start + 1, len);
-        if (isdigit(size_str[0])) {
+        if (isdigit(size_str[0]))
+         {
             return atoi(size_str);
         }
     }
@@ -58,13 +64,15 @@ int extract_buffer_size(const char *line) {
 int is_taint_source(const char *line) {
     const char *sources[] = {"scanf", "gets", "fgets", "getchar", "fscanf", "sscanf", "read", "fread", NULL};
     
-    for (int i = 0; sources[i] != NULL; i++) {
+    for (int i = 0; sources[i] != NULL; i++) 
+    {
         if (strstr(line, sources[i])) return 1;
     }
     return 0;
 }
 
-int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) {
+int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) 
+{
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Error: Cannot open file(buffer_overflow)\n");
@@ -72,6 +80,13 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) {
     }
     
     BufferAnalysis analysis = {0};
+    analysis.buffers = malloc(MAX_BUFFERS * sizeof(BufferTracker));  
+    if (!analysis.buffers) {
+        printf("Error!! Memory allocation failed\n");
+        fclose(file);
+        return 0;
+    }
+
     char line[1024];
     int line_num = 0;
     int in_comment = 0;
@@ -79,15 +94,21 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) {
     while (fgets(line, sizeof(line), file)) {
         line_num++;
         
-        if (strstr(line, "/*")) in_comment = 1;
+        if (strstr(line, "/*")) 
+        {
+            in_comment = 1;
+        }
         if (strstr(line, "*/")) {
             in_comment = 0;
             continue;
         }
-        if (in_comment || strstr(line, "//")) continue;
+        if (in_comment || strstr(line, "//")) 
+        continue;
         
-        if (strstr(line, "char") && strchr(line, '[') && strchr(line, ']')) {
-            if (analysis.count < MAX_BUFFERS) {
+        if (strstr(line, "char") && strchr(line, '[') && strchr(line, ']'))
+         {
+            if (analysis.count < MAX_BUFFERS) 
+            {
                 BufferTracker *buf = &analysis.buffers[analysis.count];
                 
                 extract_var_name(line, buf->name);
@@ -117,7 +138,8 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) {
             
             if (strstr(line, "strcpy")) {
                 char *strcpy_pos = strstr(line, "strcpy");
-                if (strstr(strcpy_pos, buf->name)) {
+                if (strstr(strcpy_pos, buf->name)) 
+                {
                     int copying_from_tainted = 0;
                     for (int j = 0; j < analysis.count; j++) {
                         if (i != j && analysis.buffers[j].is_tainted && strstr(line, analysis.buffers[j].name)) {
@@ -214,7 +236,8 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) {
     else {
         printf("\033[1;31mHIGH\033[0m\n");
     }
-    
+
+    free(analysis.buffers); 
     
     return 1;
 }

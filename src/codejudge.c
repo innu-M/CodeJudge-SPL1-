@@ -216,7 +216,7 @@ int main()
                     printf(YELLOW "MEDIUM\n" RESET);
 
                 else
-                    printf(RED "HIGH - Immediate attention required!\n" RESET);
+                    printf(RED "HIGH!\n" RESET);
                 break;
 
             

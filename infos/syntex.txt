@@ -1,0 +1,3 @@
+strstr()----searches first occurrence of a string inside a string
+
+strchr()----searches first occurrence of a char inside a string
