@@ -41,7 +41,7 @@ typedef struct {
     int passed;
 } FileSession;
 
-FileSession sessions[16];
+FileSession sessions[100];
 int session_count  = 0;
 int current_session = -1;
 
@@ -133,7 +133,7 @@ int main()
         {
             case 1: {
                 s->total_tests++;
-                printf("\n========== Test Case %d ==========\n", s->total_tests);
+                printf("\n------------------ Test Case %d -----------------\n", s->total_tests);
                 
                 TestResult *temp = realloc(s->test_results, s->total_tests * sizeof(TestResult));
                 if (!temp) 
@@ -162,7 +162,7 @@ int main()
                 break;
                 
             case 4:
-                printf("\n========== ADVANCED COMPLEXITY ANALYSIS ==========\n");
+                printf("\n---------------------ADVANCED COMPLEXITY ANALYSIS---------------------\n");
                 calculate_cyclomatic_complexity(s->source_file, &metrics);
                 calculate_cognitive_complexity(s->source_file, &metrics);
                 
@@ -200,7 +200,7 @@ int main()
                 break;
 
             case 5:
-                printf("\n========== BUFFER OVERFLOW RISK ANALYSIS ==========\n");
+                printf("\n---------------------BUFFER OVERFLOW RISK ANALYSIS---------------------\n");
                 detect_buffer_overflow_risk(s->source_file, &metrics);
                 
                 printf("Risk Score: %d\n", metrics.buffer_overflow_risk);
@@ -319,16 +319,16 @@ void display_header()
 
 void display_menu() 
 {
-    printf(CYAN "\n=================== MENU ===================\n" RESET);
-    printf("                1. Run Test Case\n");
-    printf("                2. View Test Results\n");
-    printf("                3. Analyze Code Metrics\n");
-    printf("                4. Advanced Metrics (Cyclomatic & Cognitive)\n");
-    printf("                5. Buffer Overflow Risk Analysis\n");
-    printf("                6. Add New File\n");
-    printf("                7. Switch File\n");
-    printf("                8. Exit\n");
-    printf(CYAN "============================================\n" RESET);
+    printf(CYAN "\n------------------------------------ MENU-----------------------------------\n" RESET);
+    printf("                                     1. Run Test Case\n");
+    printf("                                     2. View Test Results\n");
+    printf("                                     3. Analyze Code Metrics\n");
+    printf("                                     4. Advanced Metrics (Cyclomatic & Cognitive)\n");
+    printf("                                     5. Buffer Overflow Risk Analysis\n");
+    printf("                                     6. Add New File\n");
+    printf("                                     7. Switch File\n");
+    printf("                                     8. Exit\n");
+    printf(CYAN "-------------------------------------------------------------------------------\n" RESET);
 }
 
 void clear_buffer() 
@@ -484,7 +484,7 @@ int compile_program(const char *source_file, const char *binary_name)
         return 0;
     }
     
-    printf("Compiling %s...\n", source_file);
+   
     snprintf(command, cmd_size, "gcc %s -o %s -lm 2> error.txt", source_file, binary_name);
     
     int compile_result = system(command);
@@ -495,7 +495,7 @@ int compile_program(const char *source_file, const char *binary_name)
     {
         char ch;
         int has_error = 0;
-        printf("Compilation output:\n");
+        //printf("Compilation output:\n");
         
         while ((ch = fgetc(error_file)) != EOF) 
         {
@@ -513,7 +513,7 @@ int compile_program(const char *source_file, const char *binary_name)
     }
     
     remove("error.txt");
-    printf("Compilation SUCCESS\n");
+    // printf("Compilation SUCCESS\n");
     return 1;
 }
 
@@ -773,9 +773,9 @@ void cleanup_test_files(const char *input_file, const char *output_file)
 
 void display_result(int passed, int total, TestResult *test_results) 
 {
-    printf("\n========================================\n");
-    printf("                FINAL RESULTS               \n");
-    printf("========================================\n");
+    printf("\n--------------------------------------------------\n");
+     printf("|                 FINAL RESULTS                   | \n");
+    printf("--------------------------------------------------\n");
     printf("Total Tests:  %d\n", total);
     printf("Passed:       %d\n", passed);
     printf("Failed:       %d\n", total - passed);
@@ -786,7 +786,7 @@ void display_result(int passed, int total, TestResult *test_results)
         printf("Pass Rate:    %.1f%%\n", pass_percentage);
     }
 
-    printf("========================================\n");
+    printf("--------------------------------------------------\n");
     printf("\nDetailed Results:\n");
 
     for (int i = 0; i < total; i++) 
@@ -810,10 +810,8 @@ void display_result(int passed, int total, TestResult *test_results)
 
 void code_metrics(const char *source_file)
 {
-    printf("\n========================================\n");
-    printf("            ANALYZING CODE METRICS          \n");
-    printf("========================================    \n");
-
+    printf("\n----------------------- CODE METRICS ANALYSIS -----------------------\n");
+   
     CodeMetrics metrics;
     if (analyze_source_file(source_file, &metrics)) 
         display_metrics(&metrics);

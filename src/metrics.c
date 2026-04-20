@@ -252,7 +252,7 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
 }
 
 void display_metrics(const CodeMetrics *metrics) {
-    printf("\n              ============= CODE METRICS ANALYSIS ============    \n");
+    printf("\n-----------------------------CODE METRICS ANALYSIS------------------------------\n");
     printf("                      Lines of Code (LOC): %d\n", metrics->loc);
 
     printf("                      Logical LOC: %d\n", metrics->lloc);
@@ -263,7 +263,7 @@ void display_metrics(const CodeMetrics *metrics) {
     printf("                      Number of functions: %d\n", metrics->functions);
   
   //halstead metrics
-    printf("\n             ======= Halstead Metrics =========       \n");
+    printf("\n---------------------------- Halstead Metrics ----------------------------------\n");
 
 
     /* printf("Distinct operators (n1): %d\n", metrics->halstead_n1);

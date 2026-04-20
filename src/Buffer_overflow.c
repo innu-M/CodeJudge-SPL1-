@@ -177,13 +177,13 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics) {
     
     fclose(file);
     
-    printf("\n========== BUFFER OVERFLOW ANALYSIS ==========\n");
-    printf("Buffers tracked: %d\n", analysis.count);
-    printf("Potential overflows: %d\n", analysis.overflow_count);
-    printf("Taint violations: %d\n\n", analysis.taint_violations);
+    printf("\n------------------------- BUFFER OVERFLOW ANALYSIS------------------------\n");
+    printf("                    Buffers tracked: %d\n", analysis.count);
+    printf("                    Potential overflows: %d\n", analysis.overflow_count);
+    printf("                    Taint violations: %d\n\n", analysis.taint_violations);
     
     if (analysis.count > 0) {
-        printf("Buffer Details:\n");
+        printf("                Buffer Details:\n");
         printf("%-15s %-8s %-8s %s\n", "Name", "Size", "Tainted", "Risky Operations");
        
         

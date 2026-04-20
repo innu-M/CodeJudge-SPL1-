@@ -169,14 +169,14 @@ void visualize_output_difference(const char *expected, const char *actual) {
     size_t lines_e = count_lines(expected);
     size_t lines_a = count_lines(actual);
 
-    printf(BOLD "\n============ OUTPUT DIFFERENCE============\n" RESET);
+    printf(BOLD "\n---------------------- OUTPUT DIFFERENCE----------------------------\n" RESET);
     printf("Expected: %zu chars, %zu lines\n", len_e, lines_e);
     printf("Actual:   %zu chars, %zu lines\n", len_a, lines_a);
 
     size_t mm = first_mismatch_index(expected, actual);
     if (mm == (size_t)-1) {
         printf(GREEN "\nOutputs match exactly.\n" RESET);
-        printf(BOLD "==================================================\n\n" RESET);
+        printf("\n\n");
         return;
     }
 
