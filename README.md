@@ -92,7 +92,7 @@ CodeJudge/
 ### Compile
 
 ```bash
-gcc src/codejudge.c src/cognitive.c  src/cyclomatic.c src/metrics.c src/mathlib.c src/output_com.c src/Buffer_overflow1.c -o codejudge
+gcc src/codejudge.c src/Testing.c src/cognitive.c  src/cyclomatic.c src/metrics.c src/mathlib.c src/output_com.c src/Buffer_overflow1.c -o codejudge
 ```
 
 ### Run
