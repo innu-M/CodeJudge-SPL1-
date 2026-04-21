@@ -1,0 +1,6 @@
+Error: Division by zero
+Result: 0
+Category: Zero
+Error: Modulo by zero
+Result: 0
+Category: Zero

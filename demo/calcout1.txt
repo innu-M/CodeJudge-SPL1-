@@ -1,0 +1,8 @@
+Result: 15
+Category: Small Positive
+Result: 25
+Category: Small Positive
+Result: 1
+Category: Small Positive
+Result: 1200
+Category: Very Large Positive

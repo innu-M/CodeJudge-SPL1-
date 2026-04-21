@@ -6,7 +6,7 @@
 int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        printf("Error: Cannot open file\n");
+        printf("Error!! Cannot open file\n");
         return 0;
     }
     
@@ -32,7 +32,8 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             in_comment = 0;
         }
         
-        if (in_comment) continue;
+        if (in_comment) 
+        continue;
         
         char *single_comment = strstr(line, "//");
         if (single_comment) 
@@ -50,7 +51,8 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             }
             if (line[i] == '}') {
                 current_nesting--;
-                if (current_nesting < 0) current_nesting = 0;  
+                if (current_nesting < 0) 
+                current_nesting = 0;  
             }
         }
         
@@ -62,10 +64,14 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
         {
            if ((ptr == line || !isalnum(*(ptr-1))) && 
                 !isalnum(ptr[2]) && 
-                strchr(ptr, '(') != NULL) {
-                if (current_nesting > 0) {
+                strchr(ptr, '(') != NULL) 
+                {
+                if (current_nesting > 0) 
+                {
                     cognitive_score += (1 + (current_nesting - 1));
-                } else {
+                } 
+                else 
+                {
                     cognitive_score += (1 + 0);
                 }
             }

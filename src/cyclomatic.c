@@ -6,7 +6,7 @@
 int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        printf("Error: Cannot open file for cyclomatic analysis\n");
+        printf("Error!! Cannot open file (cyclomatic analysis)\n");
         return 0;
     }
     
@@ -21,14 +21,17 @@ int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) 
         
         if (comment_start) {
             in_comment = 1;
-            if (comment_end && comment_end > comment_start) {
+            if (comment_end && comment_end > comment_start) 
+            {
                 in_comment = 0;
             }
-        } else if (comment_end) {
+        }
+         else if (comment_end) {
             in_comment = 0;
         }
         
-        if (in_comment) continue;
+        if (in_comment)
+        continue;
         
        
         char *single_comment = strstr(line, "//");
