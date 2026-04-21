@@ -69,7 +69,7 @@ void display_header();
 
 int new_session(const char *source_file)
 {
-    if (session_count >= 16) {
+    if (session_count >= 100) {
         printf("Max files reached\n");
         return 0;
     }
@@ -95,7 +95,7 @@ int main()
     
     if (!source_file) 
     {
-        printf("Error: Could not read file path\n");
+        printf("Error!! Could not read file path\n");
         return 1;
     }
 

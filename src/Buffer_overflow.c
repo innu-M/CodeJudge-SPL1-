@@ -211,13 +211,44 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
         printf("%-15s %-8s %-8s %s\n", "Name", "Size", "Tainted", "Risky Operations");
        
         
-        for (int i = 0; i < analysis.count; i++) {
+        for (int i = 0; i < analysis.count; i++) {  
             BufferTracker *buf = &analysis.buffers[i];
-            printf("%-15s %-8d %-8s %s\n", 
-                   buf->name, 
-                   buf->declared_size,
-                   buf->is_tainted ? "YES" : "NO",
-                   strlen(buf->risky_ops) > 0 ? buf->risky_ops : "None");
+            if (buf->is_tainted) {
+                if (strlen(buf->risky_ops) > 0) {
+                    printf("%-15s %-8d %-8s %s\n",
+                        buf->name,
+                        buf->declared_size,
+                        "YES",
+                        buf->risky_ops);
+                }
+                 else 
+                 {
+                    printf("%-15s %-8d %-8s %s\n",
+                        buf->name,
+                        buf->declared_size,
+                        "YES",
+                        "None");
+                }
+            }
+             else 
+             {
+                if (strlen(buf->risky_ops) > 0) {
+                    printf("%-15s %-8d %-8s %s\n",
+                        buf->name,
+                        buf->declared_size,
+                        "NO",
+                        buf->risky_ops);
+                }
+                 else 
+                 {
+                    printf("%-15s %-8d %-8s %s\n",
+                        buf->name,
+                        buf->declared_size,
+                        "NO",
+                        "None");
+                }
+            }
+
         }
     }
     
@@ -236,7 +267,8 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
      {
         printf("MEDIUM\n");
     } 
-    else {
+    else 
+    {
         printf("HIGH\n");
     }
 
