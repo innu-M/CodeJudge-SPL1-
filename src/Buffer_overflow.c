@@ -75,7 +75,7 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
 {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        printf("Error: Cannot open file(buffer_overflow)\n");
+        printf("Error!! Cannot open file(buffer_overflow)\n");
         return 0;
     }
     
@@ -98,7 +98,8 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
         {
             in_comment = 1;
         }
-        if (strstr(line, "*/")) {
+        if (strstr(line, "*/")) 
+        {
             in_comment = 0;
             continue;
         }
@@ -134,7 +135,8 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
         for (int i = 0; i < analysis.count; i++) {
             BufferTracker *buf = &analysis.buffers[i];
             
-            if (!strstr(line, buf->name)) continue;
+            if (!strstr(line, buf->name)) 
+            continue;
             
             if (strstr(line, "strcpy")) {
                 char *strcpy_pos = strstr(line, "strcpy");
@@ -226,15 +228,16 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
     printf("\nRisk Level: ");
 
     
-    if (metrics->buffer_overflow_risk < 10) {
-        printf("\033[1;32mLOW\033[0m\n");
+    if (metrics->buffer_overflow_risk < 10) 
+    {
+        printf("LOW\n");
     }
      else if (metrics->buffer_overflow_risk < 30) 
      {
-        printf("\033[1;33mMEDIUM\033[0m\n");
+        printf("MEDIUM\n");
     } 
     else {
-        printf("\033[1;31mHIGH\033[0m\n");
+        printf("HIGH\n");
     }
 
     free(analysis.buffers); 

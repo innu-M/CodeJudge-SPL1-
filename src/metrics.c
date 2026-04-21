@@ -12,10 +12,8 @@ const char *operators[] = {
     "==", "!=", "<", ">", "<=", ">=",
     "&&", "||", "!",
     "&", "|", "^", "~", "<<", ">>",
-    "?", ":", ",", ".", "->",
-    "sizeof", "return", "if", "else", "while", 
-    "for", "do", "switch", "case", "break", 
-    "continue", "goto", "default",
+    "&=", "|=", "^=", "<<=", ">>=",
+    "?", 
     NULL
 };
 

@@ -10,6 +10,6 @@ int main()
     {
         sum=sum+i;
     }
-    printf(" you got %d and nothing\n", sum);
+    printf("you got %d and nothing\n", sum);
     return 0;
 }

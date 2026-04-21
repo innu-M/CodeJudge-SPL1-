@@ -165,7 +165,8 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             if (strncmp(ptr, "&&", 2) == 0 || strncmp(ptr, "||", 2) == 0) {
                 cognitive_score += 1;
                 ptr += 2;
-            } else {
+            } 
+            else {
                 ptr++;
             }
         }

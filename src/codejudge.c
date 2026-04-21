@@ -673,9 +673,9 @@ void run_program_and_CtO(DBuffer *buffer, const char *binary, const char *input_
 
 void comparison(const char *input, const char *expected, const char *actual) 
 {
-    printf("\n========================================\n");
-    printf("                COMPARISON                  \n");
-    printf("========================================\n");
+    printf("\n------------------------------------------------------------------\n");
+    printf("|                           COMPARISON                              | \n");
+    printf("--------------------------------------------------------------------\n");
     printf("Expected Output:\n%s\n\n", expected);
     printf("Actual Output:\n%s\n", actual);
     
