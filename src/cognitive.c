@@ -43,9 +43,11 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
         
         for (int i = 0; line[i] != '\0'; i++) 
         {
-            if (line[i] == '{') {
+            if (line[i] == '{') 
+            {
                 current_nesting++;
-                if (current_nesting > max_nesting) {
+                if (current_nesting > max_nesting) 
+                {
                     max_nesting = current_nesting;
                 }
             }

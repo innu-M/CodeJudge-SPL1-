@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 int main() {
     int a = 5, b = 10, c = 15;
@@ -17,11 +18,22 @@ int main() {
             }
         }
     }
-
+//a=5
+// b=10
+// c=15
     if (a > b) {
         c = (a > c) ? a : c;
     } else {
         c = (b > c) ? b : c;
     }
+    //riskypart
+    char message[100];
+
+    char username[50];
+    char password[30];
+
+    scanf("%s", username);
+    strcpy(message, username);
+
     return 0;
 }

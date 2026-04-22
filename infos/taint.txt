@@ -1,0 +1,23 @@
+The concept of taint analysis — tracking user input
+ as tainted data and checking if it flows into unsafe functions
+  — is a well-known technique used in real security tools like Flawfinder and RATS
+ . I studied how those tools work and implemented a simplified version of the same idea in C. 
+ The scoring formula was inspired by Flawfinder's approach of assigning different
+  risk weights to different unsafe functions based on how dangerous they are.
+
+  "Flawfinder assigns risk levels from 0 to 5 per function based on severity.
+   I adapted that idea — gets() gets the highest weight because it has zero bound checking, 
+   strcpy and strcat get medium weight, and scanf %s gets the lowest.
+    Then I sum them up into a total score,
+   similar to how Flawfinder accumulates hits per risk level
+.
+
+
+
+Flawfinder is one of the oldest and most cited open-source static analysis tools for C.
+ It's mentioned in security research papers and is CWE-compatible
+ https://www.systutorials.com/docs/linux/man/1-flawfinder/
+
+
+
+ https://pvs-studio.com/en/blog/posts/cpp/1302/

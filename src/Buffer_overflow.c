@@ -19,6 +19,7 @@ typedef struct {
     int count;
     int overflow_count;
     int taint_violations;
+    int gets_count;
 } BufferAnalysis;
 
 void extract_var_name(const char *line, char *var_name) {
@@ -66,7 +67,8 @@ int is_taint_source(const char *line) {
     
     for (int i = 0; sources[i] != NULL; i++) 
     {
-        if (strstr(line, sources[i])) return 1;
+        if (strstr(line, sources[i])) 
+        return 1;
     }
     return 0;
 }
@@ -181,6 +183,7 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
             if (strstr(line, "gets")) {
                 analysis.overflow_count += 2;
                 analysis.taint_violations++;
+                analysis.gets_count++;
                 char msg[100];
                 snprintf(msg, sizeof(msg), "Line %d: gets() CRITICAL; ", line_num);
                 strncat(buf->risky_ops, msg, sizeof(buf->risky_ops) - strlen(buf->risky_ops) - 1);
@@ -201,7 +204,7 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
     
     fclose(file);
     
-    printf("\n------------------------- BUFFER OVERFLOW ANALYSIS------------------------\n");
+   // printf("\n------------------------- BUFFER OVERFLOW ANALYSIS------------------------\n");
     printf("                    Buffers tracked: %d\n", analysis.count);
     printf("                    Potential overflows: %d\n", analysis.overflow_count);
     printf("                    Taint violations: %d\n\n", analysis.taint_violations);
@@ -252,18 +255,18 @@ int detect_buffer_overflow_risk(const char *filename, CodeMetrics *metrics)
         }
     }
     
-    metrics->buffer_overflow_risk = analysis.overflow_count * 10 + analysis.taint_violations * 5;
+    metrics->buffer_overflow_risk = (analysis.gets_count * 5)+ (analysis.overflow_count * 3) + (analysis.taint_violations * 2);
     metrics->unsafe_functions_count = analysis.overflow_count;
     metrics->fixed_buffer_count = analysis.count;
     
     printf("\nRisk Level: ");
 
     
-    if (metrics->buffer_overflow_risk < 10) 
+    if (metrics->buffer_overflow_risk < 5) 
     {
         printf("LOW\n");
     }
-     else if (metrics->buffer_overflow_risk < 30) 
+     else if (metrics->buffer_overflow_risk < 15) 
      {
         printf("MEDIUM\n");
     } 

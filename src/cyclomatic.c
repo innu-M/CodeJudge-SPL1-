@@ -26,7 +26,8 @@ int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) 
                 in_comment = 0;
             }
         }
-         else if (comment_end) {
+         else if (comment_end) 
+        {
             in_comment = 0;
         }
         
@@ -35,13 +36,15 @@ int calculate_cyclomatic_complexity(const char *filename, CodeMetrics *metrics) 
         
        
         char *single_comment = strstr(line, "//");
-        if (single_comment) {
+        if (single_comment) 
+        {
             *single_comment = '\0';  
         }
         
         
         char *ptr = line;
-        while (*ptr != '\0') {
+        while (*ptr != '\0') 
+        {
             
             if (strncmp(ptr, "if", 2) == 0 && 
                 (ptr == line || !isalnum(*(ptr-1))) && 

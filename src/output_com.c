@@ -13,8 +13,10 @@
 
 
 
-int count_lines(const char *s) {
-    if (!s) return 0;
+int count_lines(const char *s)
+{
+    if (!s) 
+    return 0;
     int lines = 1;
     for (const char *p = s; *p; p++)
         if (*p == '\n')
@@ -22,7 +24,8 @@ int count_lines(const char *s) {
     return lines;
 }
 
-int first_mismatch_index(const char *a, const char *b) {
+int first_mismatch_index(const char *a, const char *b) 
+{
     int i = 0;
     while (a[i] && b[i] && a[i] == b[i])
         i++;
@@ -31,27 +34,36 @@ int first_mismatch_index(const char *a, const char *b) {
     return i;
 }
 
-void line_col_at(const char *s, int idx, int *line, int *col) {
+void line_col_at(const char *s, int idx, int *line, int *col) 
+{
     int l = 1, c = 1;
     for (int i = 0; i < idx && s[i]; i++) {
-        if (s[i] == '\n') { l++; c = 1; } else c++;
+        if (s[i] == '\n') 
+        { l++; c = 1; }
+         else
+         c++;
     }
     *line = l; *col = c;
 }
 
-const char* line_start_at(const char *s, int idx) {
+const char* line_start_at(const char *s, int idx) 
+{
     const char *p = s + idx;
-    while (p > s && p[-1] != '\n') p--;
+    while (p > s && p[-1] != '\n') 
+    p--;
     return p;
 }
 
-const char* line_end_at(const char *s, int idx) {
+const char* line_end_at(const char *s, int idx) 
+{
     const char *p = s + idx;
-    while (*p && *p != '\n') p++;
+    while (*p && *p != '\n') 
+    p++;
     return p;
 }
 
-void print_line_with_caret(const char *prefix, const char *line_start, const char *line_end, int caret_col_1based) {
+void print_line_with_caret(const char *prefix, const char *line_start, const char *line_end, int caret_col_1based) 
+{
     int line_len = (int)(line_end - line_start);
     int caret0;
 
@@ -89,7 +101,8 @@ void print_line_with_caret(const char *prefix, const char *line_start, const cha
 }
 
 void print_context_window(const char *label, const char *s, int mismatch_line, int mismatch_col,
-                          int ctx_before, int ctx_after, int caret_here) {
+                          int ctx_before, int ctx_after, int caret_here) 
+                          {
     printf(BOLD "%s\n" RESET, label);
 
     int cur_line = 1;
@@ -98,9 +111,11 @@ void print_context_window(const char *label, const char *s, int mismatch_line, i
     while (*p) {
         const char *ls = p;
         const char *le = p;
-        while (*le && *le != '\n') le++;
+        while (*le && *le != '\n') 
+        le++;
 
-        if (cur_line + ctx_after < mismatch_line) {
+        if (cur_line + ctx_after < mismatch_line) 
+        {
             if (*le == '\n')
                 p = le + 1;
             else
@@ -115,9 +130,12 @@ void print_context_window(const char *label, const char *s, int mismatch_line, i
         char prefix[64];
         snprintf(prefix, sizeof(prefix), "  %5d | ", cur_line);
 
-        if (caret_here && cur_line == mismatch_line) {
+        if (caret_here && cur_line == mismatch_line) 
+        {
             print_line_with_caret(prefix, ls, le, mismatch_col);
-        } else {
+        }
+         else 
+         {
             int len = (int)(le - ls);
             printf("%s", prefix);
             if (len <= MAX_SHOW)
@@ -164,9 +182,13 @@ void visualize_output_difference(const char *expected, const char *actual) {
 
     if (expected[mm] == '\0') {
         printf(YELLOW "Expected ended early (EOF), but actual continues.\n" RESET);
-    } else if (actual[mm] == '\0') {
+    }
+     else if (actual[mm] == '\0') 
+     {
         printf(YELLOW "Actual ended early (EOF), but expected continues.\n" RESET);
-    } else {
+    }
+     else 
+     {
         printf("Expected char: '%c'\n", expected[mm]);
         printf("Actual char:   '%c'\n", actual[mm]);
     }
@@ -175,6 +197,7 @@ void visualize_output_difference(const char *expected, const char *actual) {
     printf("Actual location:   line %d, col %d\n\n", la, ca);
 
     const int CTX_BEFORE = 2, CTX_AFTER = 2;
+    
     print_context_window("Expected (context):", expected, le, ce, CTX_BEFORE, CTX_AFTER, 1);
     printf("\n");
     print_context_window("Actual (context):", actual, la, ca, CTX_BEFORE, CTX_AFTER, 1);

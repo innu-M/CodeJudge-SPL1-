@@ -1,0 +1,9 @@
+both
+https://dev.to/packmind/cyclomatic-complexity-and-cognitive-complexity-4c03
+
+
+cyclomatic
+https://www.geeksforgeeks.org/dsa/cyclomatic-complexity/
+
+cognitive
+https://stackoverflow.com/questions/52741725/what-is-cognitive-complexity-in-sonar-report
