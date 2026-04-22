@@ -1,0 +1,8 @@
+directory
+
+
+compile
+gcc src/codejudge.c src/Testing.c src/cognitive.c  src/cyclomatic.c src/metrics.c src/mathlib.c src/output_com.c src/Buffer_overflow.c -o codejudge 
+
+run
+./codejudge
