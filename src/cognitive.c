@@ -17,13 +17,14 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
     int in_comment = 0;
     
     while (fgets(line, sizeof(line), file)) {
-       char *comment_start = strstr(line, "/*");
+        char *comment_start = strstr(line, "/*");
         char *comment_end = strstr(line, "*/");
         
-        if (comment_start)
-         {
+        if (comment_start) 
+        {
             in_comment = 1;
-            if (comment_end && comment_end > comment_start) {
+            if (comment_end && comment_end > comment_start) 
+            {
                 in_comment = 0;
             }
         } 
@@ -33,7 +34,7 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
         }
         
         if (in_comment) 
-        continue;
+            continue;
         
         char *single_comment = strstr(line, "//");
         if (single_comment) 
@@ -43,8 +44,7 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
         
         for (int i = 0; line[i] != '\0'; i++) 
         {
-            if (line[i] == '{') 
-            {
+            if (line[i] == '{') {
                 current_nesting++;
                 if (current_nesting > max_nesting) 
                 {
@@ -53,34 +53,27 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             }
             if (line[i] == '}') {
                 current_nesting--;
-                if (current_nesting < 0) 
-                current_nesting = 0;  
+                if (current_nesting < 0)
+                    current_nesting = 0;
             }
         }
         
-        
         char *ptr = line;
-        
 
         while ((ptr = strstr(ptr, "if")) != NULL) 
         {
-           if ((ptr == line || !isalnum(*(ptr-1))) && 
+            if ((ptr == line || !isalnum(*(ptr-1))) && 
                 !isalnum(ptr[2]) && 
-                strchr(ptr, '(') != NULL) 
-                {
-                if (current_nesting > 0) 
-                {
-                    cognitive_score += (1 + (current_nesting - 1));
-                } 
-                else 
-                {
-                    cognitive_score += (1 + 0);
+                strchr(ptr, '(') != NULL) {
+                if (current_nesting > 0) {
+                    cognitive_score += current_nesting;
+                } else {
+                    cognitive_score += 1;
                 }
             }
             ptr += 2;
         }
         
-       
         ptr = line;
         while ((ptr = strstr(ptr, "else")) != NULL) 
         {
@@ -90,106 +83,106 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
             ptr += 4;
         }
         
-        
         ptr = line;
         while ((ptr = strstr(ptr, "while")) != NULL) 
         {
             if ((ptr == line || !isalnum(*(ptr-1))) && 
                 !isalnum(ptr[5]) && 
-                strchr(ptr, '(') != NULL) {
-                if (current_nesting > 0) {
-                    cognitive_score += 1 + (current_nesting - 1);
-                } 
-                else {
-                    cognitive_score += 1 + 0;
+                strchr(ptr, '(') != NULL) 
+                {
+                if (current_nesting > 0) 
+                {
+                    cognitive_score += current_nesting;
+                } else {
+                    cognitive_score += 1;
                 }
             }
             ptr += 5;
         }
         
-       
         ptr = line;
-        while ((ptr = strstr(ptr, "for")) != NULL) 
-        {
+        while ((ptr = strstr(ptr, "for")) != NULL) {
             if ((ptr == line || !isalnum(*(ptr-1))) && 
                 !isalnum(ptr[3]) && 
-                strchr(ptr, '(') != NULL) {
+                strchr(ptr, '(') != NULL) 
+                {
                 if (current_nesting > 0) {
-                    cognitive_score += 1 + (current_nesting - 1);
-                } 
-                else {
-                    cognitive_score += 1 + 0;
-                }
 
+                    cognitive_score += current_nesting;
+                } else 
+                {
+                    cognitive_score += 1;
+                }
             }
             ptr += 3;
         }
         
-        
         ptr = line;
         while ((ptr = strstr(ptr, "switch")) != NULL) 
         {
-            if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[6])) {
-                if (current_nesting > 0) {
-                    cognitive_score += (1 + (current_nesting - 1));
-                } else {
-                    cognitive_score += (1 + 0);
+            if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[6])) 
+            {
+                if (current_nesting > 0) 
+                {
+                    cognitive_score += current_nesting;
                 }
-
+                 else 
+                 {
+                    cognitive_score += 1;
+                }
             }
             ptr += 6;
         }
         
-       
         ptr = line;
-        while ((ptr = strstr(ptr, "case")) != NULL)
-         {
-            if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[4])) {
+        while ((ptr = strstr(ptr, "case")) != NULL) 
+        {
+            if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[4])) 
+            {
                 cognitive_score += 1;
             }
             ptr += 4;
         }
-        
         
         if (strstr(line, "break") || strstr(line, "continue")) 
         {
             cognitive_score += 1;
         }
         
-       
         ptr = line;
         while ((ptr = strstr(ptr, "goto")) != NULL) 
         {
-            if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[4])) {
+            if ((ptr == line || !isalnum(*(ptr-1))) && !isalnum(ptr[4])) 
+            {
                 cognitive_score += 2;
             }
             ptr += 4;
         }
         
-        
         ptr = line;
         while (*ptr != '\0') 
         {
-            if (strncmp(ptr, "&&", 2) == 0 || strncmp(ptr, "||", 2) == 0) {
+            if (strncmp(ptr, "&&", 2) == 0 || strncmp(ptr, "||", 2) == 0) 
+            {
                 cognitive_score += 1;
                 ptr += 2;
-            } 
-            else {
+            }
+             else 
+             {
                 ptr++;
             }
         }
         
-        
         if (strchr(line, '?') != NULL && strchr(line, ':') != NULL) 
         {
-            if (current_nesting > 0) {
-                cognitive_score += (1 + (current_nesting - 1));
-            } 
-            else 
-             {
-            cognitive_score += (1 + 0);
+            if (current_nesting > 0) 
+            {
+                cognitive_score += current_nesting;
             }
-
+             else 
+            {
+                cognitive_score += 1;
+            }
         }
     }
     
@@ -197,7 +190,7 @@ int calculate_cognitive_complexity(const char *filename, CodeMetrics *metrics) {
     
     metrics->cognitive_complexity = cognitive_score;
     metrics->max_nesting = max_nesting;
-    metrics->nesting_level = current_nesting;  
+    metrics->nesting_level = current_nesting;
     
     return 1;
 }

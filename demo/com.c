@@ -35,5 +35,7 @@ int main() {
     scanf("%s", username);
     strcpy(message, username);
 
+    printf("%s", message); 
+
     return 0;
 }

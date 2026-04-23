@@ -35,7 +35,9 @@ void extract_var_name(const char *line, char *var_name) {
     int i = 0;
     while (*ptr && (isalnum(*ptr) || *ptr == '_')) {
         var_name[i++] = *ptr++;
-        if (i >= 49) break;
+        
+        if (i >= 49) 
+        break;
     }
     var_name[i] = '\0';
 }

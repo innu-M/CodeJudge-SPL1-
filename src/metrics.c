@@ -84,7 +84,8 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
         
         
         char *trimmed = line;
-        while (*trimmed == ' ' || *trimmed == '\t') trimmed++;
+        while (*trimmed == ' ' || *trimmed == '\t') 
+        trimmed++;
         
        
         if (in_comment_block) {
@@ -96,7 +97,8 @@ int analyze_source_file(const char *filename, CodeMetrics *metrics)
                 in_comment_block = 0;
              
                 char *after_comment = end_comment + 2;
-                while (*after_comment == ' ' || *after_comment == '\t') after_comment++;
+                while (*after_comment == ' ' || *after_comment == '\t') 
+                after_comment++;
 
                 if (*after_comment != '\0') 
                 {
